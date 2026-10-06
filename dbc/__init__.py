@@ -1,0 +1,1 @@
+"""Dinner Bell Co automation."""

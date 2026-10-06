@@ -1,0 +1,48 @@
+# One idea in. Run: python -m dbc draft ideas/papas-keepers-mug.toml
+# Reproduces the listing template John approved on 2026-10-06 (shop/setup-kit.md section 6).
+
+id = "papas-keepers-mug"
+line = "fishing"                 # grandma | hunting | trades | fishing | dogs
+product = "mug11"                # mug11 | mug15 | tee | crewneck (config/products.toml)
+section = "Fishing"
+
+recipient = "Papa"               # who it's for, as it reads in the title
+recipient_alt = "Grandpa"        # second name for the same person
+theme = "fishing"
+motif = "Grandkids Names on Fish"
+design_text = ["Papa's Keepers"] # every word printed on the product (also screened)
+
+# Optional: leave out to let the drafter build one from the fields above.
+title = "Personalized Papa Mug with Grandkids Names on Fish, Custom Fishing Mug for Grandpa, 11oz"
+primary_keyword = "personalized papa mug"   # must show up in the first 160 characters
+
+# The drafter tops these up to 13 from the fields above, then checks every one.
+keywords = [
+  "papa fishing mug", "grandpa fishing gift", "custom fishing mug", "grandkids names mug",
+  "personalized papa", "fishing grandpa mug", "gift for papa", "papa christmas gift",
+  "fisherman gift", "bass fishing mug", "pawpaw mug", "grandpa coffee mug", "fishing lover gift",
+]
+
+opening = "A personalized Papa mug with every grandkid's name on a fish he'd be proud to keep. Printed exactly as you type it, for the grandpa who'd rather be on the water."
+order_emoji = "🎣"
+how_to_order = [
+  "Type what the grandkids call him, as it should print (Papa's, Grandpa's, Pawpaw's).",
+  "Add one grandkid's name per box.",
+]
+extra_specs = ["Design printed on both sides: \"Papa's Keepers\" on one side, the fish with names on the other"]
+
+[attributes]
+holiday = "Christmas"
+occasion = "Birthday, Father's Day"
+recipient = "Grandparents, Men"
+
+[[personalization]]
+question = "What do the grandkids call him?"
+instructions = "Type it as it should print: Papa's, Grandpa's, Pawpaw's. Max 9 characters."
+max_chars = 9
+
+[[personalization]]
+repeat = 4
+question = "Grandkid's name {n}"
+instructions = "One name per box, as it should print. Max 7 letters. We print exactly what you type."
+max_chars = 7

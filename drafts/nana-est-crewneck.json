@@ -1,0 +1,79 @@
+{
+  "id": "nana-est-crewneck",
+  "status": "draft: needs John's OK before anything is created or published",
+  "drafted_on": "2026-10-06",
+  "line": "grandma",
+  "product": "crewneck",
+  "product_kind": "apparel",
+  "print_provider": "Monster Digital",
+  "title": "Personalized Nana Sweatshirt with Grandkids Names, Custom Grandma Sweatshirt, Crewneck",
+  "primary_keyword": "nana sweatshirt",
+  "tags": [
+    "nana sweatshirt",
+    "custom nana shirt",
+    "grandma sweatshirt",
+    "nana gift",
+    "personalized nana",
+    "gift for nana",
+    "nana christmas gift",
+    "gift for grandma",
+    "custom sweatshirt",
+    "custom crewneck",
+    "christmas sweatshirt",
+    "family sweatshirt",
+    "names sweatshirt"
+  ],
+  "description": "A personalized Nana sweatshirt with the year she became Nana and every grandkid's name underneath. Made for the woman who keeps the whole family together.\n\n💕 How to order\n1. Type the year she became Nana.\n2. Add one grandkid's name per box.\n3. Double-check spelling. We print exactly what you type.\n\n🧶 The sweatshirt\n• Gildan 18000 unisex crewneck sweatshirt, cotton-poly blend\n• Unisex sizes S to 3XL; see the size chart in the photos\n• Wash inside out in cold water, tumble dry low\n\n🎄 Christmas timing\nMade in 3–6 business days, then 2–5 days shipping (US). Order by Tuesday, December 8 for Christmas.\n\n💛 Our promise\nBecause each sweatshirt is made just for you, we can't take returns or exchanges. If it arrives damaged, misprinted, or different from what you typed, message us within 14 days with a photo and we'll replace it free.\n\nDesigned by Dinner Bell Co with the help of digital and AI tools. Names are set as real text. Printed and shipped by our production partner, Printify, from a US print shop.",
+  "personalization": [
+    {
+      "question": "Year she became Nana",
+      "instructions": "Four digits, like 2019.",
+      "max_chars": 4,
+      "required": true
+    },
+    {
+      "question": "Grandkid's name 1",
+      "instructions": "One name per box, as it should print. Max 10 letters. We print exactly what you type.",
+      "max_chars": 10,
+      "required": true
+    },
+    {
+      "question": "Grandkid's name 2",
+      "instructions": "One name per box, as it should print. Max 10 letters. We print exactly what you type.",
+      "max_chars": 10,
+      "required": true
+    },
+    {
+      "question": "Grandkid's name 3",
+      "instructions": "One name per box, as it should print. Max 10 letters. We print exactly what you type.",
+      "max_chars": 10,
+      "required": true
+    },
+    {
+      "question": "Grandkid's name 4",
+      "instructions": "One name per box, as it should print. Max 10 letters. We print exactly what you type.",
+      "max_chars": 10,
+      "required": true
+    }
+  ],
+  "design_text": [
+    "Nana Est. 2019",
+    "names of the grandkids"
+  ],
+  "price": 39.99,
+  "price_status": "pending",
+  "attributes": {
+    "holiday": "Christmas",
+    "recipient": "Grandparents, Women"
+  },
+  "settings": {
+    "production_partner": "Printify",
+    "return_policy": "Personalized: made for you",
+    "processing_profile": "3–6 business days",
+    "section": "Grandma",
+    "who_made": "Designed by a seller"
+  },
+  "confirm": [
+    "Fabric blend and size range: confirm in the Printify listing for Gildan 18000"
+  ]
+}

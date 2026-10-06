@@ -1,0 +1,36 @@
+# Shop facts the listing drafter writes into every draft.
+# Source of truth: /mnt/project-files/shop/setup-kit.md (approved by John 2026-10-06).
+# Change a value here, not in the code.
+
+[shop]
+name = "Dinner Bell Co"
+etsy_shop = "DinnerBellCo"
+production_partner = "Printify"            # Etsy production partner, exactly this name
+return_policy = "Personalized: made for you"
+processing_profile = "3–6 business days"
+processing_line = "Made in 3–6 business days, then 2–5 days shipping (US)."
+# Ramp for a new shop (project-context.md section 7): drafts are queued, never bulk-published.
+max_new_listings_per_day = 5
+
+[disclosure]
+# Both disclosures Etsy needs: AI use (Creativity Standards) and the production partner.
+# The checker requires each phrase below to appear in the description.
+line = "Designed by Dinner Bell Co with the help of digital and AI tools. Names are set as real text. Printed and shipped by our production partner, Printify, from a US print shop."
+ai_phrase = "with the help of digital and AI tools"
+partner_phrase = "production partner, Printify"
+
+[promise]
+heading = "💛 Our promise"
+text = "Because each {noun} is made just for you, we can't take returns or exchanges. If it arrives damaged, misprinted, or different from what you typed, message us within 14 days with a photo and we'll replace it free."
+required_phrase = "we can't take returns or exchanges"
+
+[holiday]
+# Shown in descriptions until the order-by date passes. Recheck Printify's 2026 cutoffs in early November.
+enabled = true
+name = "Christmas"
+emoji = "🎄"
+order_by = 2026-12-08
+order_by_label = "Tuesday, December 8"
+
+[how_to_order]
+last_step = "Double-check spelling. We print exactly what you type."
