@@ -89,6 +89,32 @@
         480,
         400
       ]
+    },
+    {
+      "parameters": {
+        "command": "cd ~/dinner-bell-co && python3 -m dbc --json research-check"
+      },
+      "id": "f11705f5-44c6-540e-8933-fced905f6499",
+      "name": "Run: Anthropic key",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        240,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Turns the command's JSON into a one-line verdict you can read in the output panel.\nconst out = JSON.parse($input.first().json.stdout);\nreturn [{ json: { check: \"Anthropic key\", verdict: out.ok ? \"PASS\" : \"FAIL\", ...out } }];"
+      },
+      "id": "2b97b4ee-4a0c-51e0-804e-b35e78213ab3",
+      "name": "Result: Anthropic key",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        600
+      ]
     }
   ],
   "connections": {
@@ -107,6 +133,11 @@
           },
           {
             "node": "Run: Order watcher (dry run)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Run: Anthropic key",
             "type": "main",
             "index": 0
           }
@@ -140,6 +171,17 @@
         [
           {
             "node": "Result: Order watcher (dry run)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run: Anthropic key": {
+      "main": [
+        [
+          {
+            "node": "Result: Anthropic key",
             "type": "main",
             "index": 0
           }

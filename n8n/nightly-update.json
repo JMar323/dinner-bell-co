@@ -1,0 +1,117 @@
+{
+  "name": "Dinner Bell Co: nightly update",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "15 3 * * *"
+            }
+          ]
+        }
+      },
+      "id": "062fbd92-c332-5402-8f2d-377618ba6e01",
+      "name": "Every night at 3:15am",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "command": "cd ~/dinner-bell-co && python3 -m dbc --json update"
+      },
+      "id": "4edd6421-acbb-508c-93fc-6cdc4b896cc2",
+      "name": "Run update",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// update prints one JSON object (see dbc/updater.py).\n// It only has an email when new code arrived or something needs John.\nconst out = JSON.parse($input.first().json.stdout);\nif (!out.email || !out.email.send) return [];\nreturn [{ json: { ...out.email, ok: out.ok, commits: out.commits.length } }];"
+      },
+      "id": "9c3d0e91-ef45-5871-966d-bcacdffaf88c",
+      "name": "Anything to email?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $json.from }}",
+        "toEmail": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.text }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "38db942c-7871-5fec-beb5-584e870df39f",
+      "name": "Email John",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        660,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Every night at 3:15am": {
+      "main": [
+        [
+          {
+            "node": "Run update",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run update": {
+      "main": [
+        [
+          {
+            "node": "Anything to email?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anything to email?": {
+      "main": [
+        [
+          {
+            "node": "Email John",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/New_York"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "pinData": {},
+  "tags": [],
+  "versionId": "4cb45d53-05df-57a1-945a-9883612e6179"
+}

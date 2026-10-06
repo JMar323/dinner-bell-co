@@ -5,6 +5,11 @@
     python -m dbc --json draft ideas/x.toml              # one JSON object on stdout, for n8n
     python -m dbc printify-check                         # is the Printify token working? which shop?
     python -m dbc --json watch-orders                    # held orders, reminders, problems (read-only)
+    python -m dbc --json update                          # nightly: fast-forward to what was merged on GitHub
+    python -m dbc --json research                        # weekly idea research (Anthropic API, costs money)
+    python -m dbc research-check                         # is the Anthropic key working? (free)
+    python -m dbc research-brief                         # this week's research instructions (any engine)
+    python -m dbc research-ingest answer.json            # check an answer, write ideas/inbox/<week>/report.md
 
 Exit code 1 when any check fails (with --json the exit code is 0 and "ok" says it). Nothing here publishes or orders.
 Keys come from ~/.config/dinnerbellco/.env or /etc/dinnerbellco/.env (DBC_ENV_FILE overrides); see docs/keys.md.
@@ -19,7 +24,7 @@ import os
 import sys
 from pathlib import Path
 
-from . import banned, checks, config, drafter, printify, watcher
+from . import banned, checks, config, drafter, printify, research, updater, watcher
 
 
 def render_markdown(d: dict, issues: list[checks.Issue]) -> str:
@@ -146,6 +151,100 @@ def cmd_watch_orders(args) -> int:
     return 0 if result["ok"] else 1
 
 
+def _need_alert_email() -> int | None:
+    if os.environ.get("ALERT_EMAIL_TO"):
+        return None
+    # A config crash (non-zero exit) so n8n's error workflow tells John, instead of silent alerts.
+    print(f"error: ALERT_EMAIL_TO is not set in {config.env_file()} (see .env.example)", file=sys.stderr)
+    return 2
+
+
+def _print_email(result: dict) -> None:
+    if result["email"]["send"]:
+        print(f"\nSubject: {result['email']['subject']}\n\n{result['email']['text']}")
+
+
+def cmd_update(args) -> int:
+    if not args.dry_run and (code := _need_alert_email()):
+        return code
+    result = updater.run(config.ROOT, os.environ.get("ALERT_EMAIL_TO", ""),
+                         os.environ.get("ALERT_EMAIL_FROM", ""), dry_run=args.dry_run)
+    if args.json:
+        print(json.dumps(result, ensure_ascii=False))
+        return 0
+    if result["error"]:
+        print(f"error: {result['error']}")
+    elif not result["commits"]:
+        print(f"up to date at {result['before']}")
+    else:
+        verb = "would update" if args.dry_run else "updated"
+        print(f"{verb} {result['before']} -> {result['after']}: {len(result['commits'])} commit(s)")
+        _print_email(result)
+    return 0 if result["ok"] else 1
+
+
+def _inputs(args) -> research.Inputs:
+    today = dt.date.fromisoformat(args.today) if args.today else dt.date.today()
+    return research.Inputs(config.ROOT, today, args.inbox, config_dir=args.config, banned_path=args.banned,
+                           themes_file=getattr(args, "themes", None))
+
+
+def cmd_research(args) -> int:
+    if (code := _need_alert_email()):
+        return code
+    result = research.run(research.make_client, _inputs(args), os.environ["ALERT_EMAIL_TO"],
+                          os.environ.get("ALERT_EMAIL_FROM", ""), force=args.force)
+    if args.json:
+        print(json.dumps(result, ensure_ascii=False))
+        return 0
+    if result["skipped"]:
+        print(result["note"])
+    elif result["error"]:
+        print(f"error: {result['error']}")
+    else:
+        print(f"{result['ideas']} ideas, {len(result['drafted'])} drafted, about ${result['cost_usd']:.2f}; "
+              f"report: {result['dir']}/report.md")
+    return 0 if result["ok"] else 1
+
+
+def cmd_research_brief(args) -> int:
+    """For any research engine (e.g. a Claude routine): the instructions and the answer format."""
+    inp = _inputs(args)
+    if args.json:
+        print(json.dumps({"week": inp.week, "dir": str(inp.out_dir), "themes_from": inp.themes_from,
+                          "brief": inp.brief, "schema": inp.schema}, ensure_ascii=False))
+        return 0
+    print(f"{inp.brief}\n\nHand in one JSON object that matches this JSON Schema, saved to a file, "
+          f"then run: python3 -m dbc research-ingest <file>\n\n{json.dumps(inp.schema, indent=1)}")
+    return 0
+
+
+def cmd_research_ingest(args) -> int:
+    inp = _inputs(args)
+    try:
+        data = json.loads(Path(args.answer).read_text(encoding="utf-8"))
+        result = research.ingest(data, inp, args.engine)
+    except (OSError, ValueError, research.ResearchError) as e:
+        print(f"error: {e}", file=sys.stderr)
+        return 2
+    if args.json:
+        print(json.dumps(result, ensure_ascii=False))
+    else:
+        print(result["report"])
+        print(f"({result['ideas']} ideas, {result['blocked']} blocked; files in {result['dir']})")
+    return 0
+
+
+def cmd_research_check(args) -> int:
+    model = config.load_toml(args.config / "research.toml")["run"]["model"]
+    result = research.check(research.make_client, model)
+    if args.json:
+        print(json.dumps(result, ensure_ascii=False))
+        return 0
+    print(f"Anthropic key works; {result['model_name']} is available" if result["ok"] else f"error: {result['error']}")
+    return 0 if result["ok"] else 1
+
+
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(prog="dbc", description="Dinner Bell Co listing tools")
     p.add_argument("--config", type=Path, default=config.CONFIG_DIR)
@@ -167,6 +266,26 @@ def main(argv: list[str] | None = None) -> int:
     w.add_argument("--dry-run", action="store_true", help="don't remember what was alerted")
     w.add_argument("--now", help="pretend time, ISO 8601 (for tests)")
     w.set_defaults(func=cmd_watch_orders)
+    u = sub.add_parser("update", help="fast-forward the server's code to what was merged on GitHub")
+    u.add_argument("--dry-run", action="store_true", help="fetch and say what would change, change nothing")
+    u.set_defaults(func=cmd_update)
+    inbox = config.ROOT / "ideas" / "inbox"
+    r = sub.add_parser("research", help="weekly idea research through the Anthropic API (needs a key, costs money)")
+    r.add_argument("--inbox", type=Path, default=inbox)
+    r.add_argument("--force", action="store_true", help="run again even if this week is done")
+    r.set_defaults(func=cmd_research)
+    rb = sub.add_parser("research-brief", help="this week's research instructions and answer format")
+    rb.add_argument("--inbox", type=Path, default=inbox)
+    rb.add_argument("--themes", type=Path, help="themes CSV to use instead of config/themes.csv or the sheet")
+    rb.set_defaults(func=cmd_research_brief)
+    ri = sub.add_parser("research-ingest", help="check a research answer and write this week's report")
+    ri.add_argument("answer", type=Path)
+    ri.add_argument("--inbox", type=Path, default=inbox)
+    ri.add_argument("--themes", type=Path, help="themes CSV to use instead of config/themes.csv or the sheet")
+    ri.add_argument("--engine", default="claude-routine")
+    ri.set_defaults(func=cmd_research_ingest)
+    rc = sub.add_parser("research-check", help="check the Anthropic key without spending anything")
+    rc.set_defaults(func=cmd_research_check)
     args = p.parse_args(argv)
     config.load_env()
     try:

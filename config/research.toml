@@ -1,0 +1,44 @@
+# Weekly idea research (dbc research, routine 1 in docs/plan.md). Change values here, not in the code.
+# John's answers on what ideas he wants go here and in ideas/feedback.md.
+
+[run]
+model = "claude-opus-5-5"     # Anthropic's current default model
+effort = "high"               # low | medium | high | xhigh | max: more = deeper research, more cost
+max_searches = 20             # web searches per run ($10 per 1,000 searches, so 20 = $0.20)
+max_tokens = 64000            # room for thinking + the idea list
+max_continuations = 5         # long searches pause; resume at most this many times
+ideas = 15                    # scored ideas per run (John 2026-10-06)
+drafted = 0                   # John picks first; set above 0 to also draft the best ones
+# Rough $ per million tokens, only for the cost line in the email (check anthropic.com/pricing).
+price_input = 4.00
+price_output = 20.00
+price_cache_read = 0.20
+price_search = 0.01           # per search
+
+[score]
+# Each idea gets 1–5 on each, with evidence; the email shows the weighted score out of 100.
+demand = 0.4                  # people search for it and buy it (Etsy bestsellers, reviews, search trends)
+competition = 0.3             # 5 = few good listings for this exact angle
+gift_fit = 0.3                # heartfelt family gift with names, like Papa's Keepers
+
+[themes]
+# The themes to research, one row each: config/themes.csv in the repo, or a Google Sheet with the
+# same columns (active, theme, section, buyers, angles, products, notes). Only rows with active = yes count.
+# Franchise names (Star Wars, Star Trek, Lord of the Rings...) are trademarks: a row can be in their
+# spirit ("space and sci-fi fans") but the ideas never use their names, characters or quotes.
+file = "config/themes.csv"
+# Optional: a Google Sheet shared as "anyone with the link can view", as its CSV export link:
+# https://docs.google.com/spreadsheets/d/<sheet id>/export?format=csv&gid=0
+# When set and reachable it wins over the file above.
+sheet_csv_url = ""
+
+[products]
+# Products the research may suggest (John 2026-10-06: mugs, shirts, tops, hats). Only the ones in
+# config/products.toml can be drafted as listings yet; hoodie and hat need a template and John's price first.
+allowed = ["mug11", "tee", "crewneck", "hoodie", "hat"]
+note = "Mugs first. Clothing or a hat only when the idea really suits it. hoodie = pullover hoodie, hat = embroidered dad cap or trucker hat."
+
+[focus]
+# What to research for now (John 2026-10-06: Christmas first, not all Christmas-themed).
+text = "Gifts families buy for Christmas 2026 (orders by December 8). They don't all have to be Christmas-themed: any personalized gift someone would wrap for Christmas counts."
+evergreen = ["birthday", "retirement", "Father's Day and Mother's Day later on"]

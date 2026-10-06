@@ -49,6 +49,29 @@ Printify client only sends GET requests. Keys come from `~/.config/dinnerbellco/
 what was already emailed is kept in `$DBC_STATE_DIR/watch-orders.json`. Settings live in
 `config/shop.toml` under `[orders]`.
 
+## Nightly update
+
+```
+python -m dbc update --dry-run        # what would the nightly update pull?
+python -m dbc --json update           # what n8n runs at 3:15am: fast-forward only, then a drafter smoke test
+```
+
+Never overwrites edits or commits made on the server; it emails what to do instead.
+
+## Weekly idea research
+
+```
+python -m dbc research-brief                    # this week's instructions + answer format (any engine)
+python -m dbc research-ingest answer.json       # score, screen, write ideas/inbox/<week>/report.md
+python -m dbc --json research                   # the whole run through the Anthropic API (needs a key)
+python -m dbc research-check                    # does the key work? (free)
+```
+
+Themes come from `config/themes.csv` or John's Google Sheet with the same columns; settings in
+`config/research.toml`; John's likes and no-gos in `ideas/feedback.md`. 15 ideas a week, scored on
+demand, competition and gift fit with sources; banned and franchise terms are blocked. John picks,
+then listings are written. As a Claude routine (no key): [docs/research-routine.md](docs/research-routine.md).
+
 ## Banned terms
 
 The master list is `/mnt/project-files/training/keywords/banned_terms.txt` in the Claude project.
