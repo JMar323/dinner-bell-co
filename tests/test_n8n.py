@@ -8,11 +8,11 @@ import pytest
 from dbc import config
 
 WORKFLOWS = sorted((config.ROOT / "n8n").glob("*.json"))
-COMMAND = re.compile(r"^cd ~/dinner-bell-co && python3 -m dbc --json (draft|printify-check|watch-orders)\b")
+COMMAND = re.compile(r"^cd ~/dinner-bell-co && python3 -m dbc --json (draft|printify-check|watch-orders|update|research|research-check)\b")
 
 
 def test_there_are_workflows():
-    assert {p.name for p in WORKFLOWS} >= {"order-watcher.json", "error-alert.json", "setup-check.json"}
+    assert {p.name for p in WORKFLOWS} >= {"order-watcher.json", "error-alert.json", "setup-check.json", "nightly-update.json", "idea-research.json"}
 
 
 @pytest.mark.parametrize("path", WORKFLOWS, ids=lambda p: p.name)

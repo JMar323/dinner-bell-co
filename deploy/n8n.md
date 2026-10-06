@@ -21,6 +21,8 @@ themselves, so no key ever sits in a workflow field or an n8n execution log.
 | `setup-check.json` | Runs the drafter on the Papa's Keepers idea, `printify-check` and a dry run of the watcher, and shows PASS/FAIL for each | Manual ("Test workflow") |
 | `order-watcher.json` | `dbc watch-orders`: new held orders, 18-hour reminders, has-issues / unfulfillable / payment / canceled. Emails only when there's something new | Every 30 min, 7:00am–9:30pm Eastern |
 | `error-alert.json` | Emails John when any routine crashes | n8n Error Trigger |
+| `nightly-update.json` | `dbc update`: fast-forwards `~/dinner-bell-co` to what was merged on GitHub, then runs the drafter once with the new code. Emails only when new code arrived (and names any workflow file to re-import) or when it couldn't update | Every night, 3:15am Eastern |
+| `idea-research.json` | `dbc research`: the weekly idea research through the Anthropic API. Only needed if the research runs from n8n instead of as a Claude routine; needs `ANTHROPIC_API_KEY` and the `anthropic` package (docs/keys.md #6) | Mondays, 8am Eastern |
 
 The watcher is read-only: the Printify client can only send GET requests, and a test fails if
 anyone adds a way to approve, send or cancel an order.
@@ -69,5 +71,21 @@ Two ways round it:
 
 ## Updating
 
-`cd ~/dinner-bell-co && git pull` in the xCloud terminal (an n8n workflow can do this nightly). Re-import a workflow
-from `n8n/` only when its file changes; the commands themselves update with the pull.
+The **nightly-update** workflow does `git pull` for you: every night at 3:15am Eastern it fetches
+GitHub and fast-forwards `~/dinner-bell-co` to the merged code. It never overwrites anything:
+
+- Files edited on the server, or commits made on the server, stop the update and you get an email
+  saying which files and the one command that fixes it.
+- After an update it runs the drafter once with the new code. If that fails you get an email with the
+  command that puts the old version back.
+- When a file in `n8n/` changed, the email names it: re-import that workflow (Workflows → Import from
+  file, replace the old one, pick the email credential, turn it back on). Python changes need nothing.
+- Nothing new means no email.
+
+Set it up once: Workflows → Import from file → `n8n/nightly-update.json` → pick the SMTP credential in
+**Email John** → ⋯ → Settings → Error workflow → "Dinner Bell Co: error alert" → Save → toggle Active.
+Try it now with **Test workflow**: with nothing new it stops after "Anything to email?" (no email).
+
+By hand at any time: `cd ~/dinner-bell-co && python3 -m dbc update --dry-run` shows what would change.
+The repo is public, so the server needs no GitHub key to pull. If it ever goes private, add a
+read-only deploy key (docs/keys.md #5) and switch the remote to SSH.

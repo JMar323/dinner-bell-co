@@ -112,6 +112,20 @@ smokey bear | block | all | protected character
 elf | caution | all | the movie; generic Christmas elf art is fine, no movie quotes
 national park | caution | all | no park logos (niches.md)
 
+# Franchises John asked about (2026-10-06): a theme can be in their spirit, never use their names
+star wars | block | all | Lucasfilm/Disney marks; Etsy removes fan merch
+jedi | block | all | Lucasfilm mark
+yoda | block | all | Lucasfilm character
+mandalorian | block | all | Lucasfilm mark
+may the force be with you | block | all | Lucasfilm quote
+star trek | block | all | Paramount/CBS marks
+starfleet | block | all | Paramount/CBS mark
+live long and prosper | block | all | Star Trek quote
+lord of the rings | block | all | Middle-earth Enterprises marks
+hobbit | block | all | Middle-earth Enterprises mark
+middle earth | block | all | Middle-earth Enterprises mark
+marvel | block | all | Disney/Marvel marks
+
 # --- Political ----------------------------------------------------------------
 maga | block | all | pending, Trump-affiliated owners (samples-uspto)
 make america great again | block | all | Reg. 5921166
