@@ -12,10 +12,17 @@ banned and franchise terms, writes report.md + ideas.json).
 ## Each Monday
 
 1. `cd` to the repo and `git pull` the default branch.
-2. **Themes.** If `config/research.toml` has `[themes] sheet_csv_url`, read John's sheet (the Google
-   Drive connector if it's connected, otherwise WebFetch the CSV link) and save it, same columns, as
-   `/mnt/project-files/research/weekly/<week>/themes.csv`. Pass it to the next two commands with
-   `--themes <that file>`. Mention new or changed rows in the reply.
+2. **Themes.** If `config/research.toml` has `[themes] sheet_csv_url`, read John's sheet. This
+   container can't reach Google from the shell, so:
+   - `python3 -m dbc themes` prints the sheet's CSV link.
+   - Read it with the Google Drive connector if it's connected, otherwise WebFetch that link. Google
+     answers with a redirect to a googleusercontent.com address: WebFetch that one too, asking for
+     "the full CSV text verbatim, every row, nothing else".
+   - Save it as `/mnt/project-files/research/weekly/<week>/themes.csv`, then run
+     `python3 -m dbc themes --themes <that file>`. It fails if the CSV came back mangled (no `theme`
+     column) and lists rows that are new, turned off or changed compared with `config/themes.csv`.
+     If it fails twice, use `config/themes.csv` and say so in the reply.
+   - Pass `--themes <that file>` to the next two commands, and put the changes in the reply.
 3. `python3 -m dbc research-brief --inbox /mnt/project-files/research/weekly` (plus `--themes`) and follow the brief
    exactly: web research (WebSearch, WebFetch), 15 ideas, scores with evidence, sources you read,
    no listing fields unless the brief asks.

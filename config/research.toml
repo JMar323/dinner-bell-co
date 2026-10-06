@@ -27,9 +27,9 @@ gift_fit = 0.3                # heartfelt family gift with names, like Papa's Ke
 # Franchise names (Star Wars, Star Trek, Lord of the Rings...) are trademarks: a row can be in their
 # spirit ("space and sci-fi fans") but the ideas never use their names, characters or quotes.
 file = "config/themes.csv"
-# Optional: a Google Sheet shared as "anyone with the link can view", as its CSV export link:
-# https://docs.google.com/spreadsheets/d/<sheet id>/export?format=csv&gid=0
-# When set and reachable it wins over the file above.
+# Optional: John's Google Sheet, shared as "anyone with the link can view". Paste its normal link
+# (https://docs.google.com/spreadsheets/d/<sheet id>/edit...); `python3 -m dbc themes` shows the CSV
+# link made from it. When set and readable it wins over the file above; config/themes.csv stays the backup.
 sheet_csv_url = ""
 
 [products]

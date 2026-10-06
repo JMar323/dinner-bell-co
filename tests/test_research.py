@@ -198,3 +198,36 @@ def test_a_themes_file_from_the_sheet_overrides_the_repo_copy(tmp_path):
     sheet.write_text("active,theme,products\nyes,Space and sci-fi fans,mug11\n")
     inp = research.Inputs(config.ROOT, TODAY, tmp_path / "inbox", themes_file=sheet)
     assert [t["id"] for t in inp.themes] == ["space-and-sci-fi-fans"] and inp.themes_from == str(sheet)
+
+
+def test_a_normal_sheet_link_becomes_its_csv_download_link():
+    sheet = "https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
+    assert research.sheet_csv_url(sheet + "/edit?usp=sharing") == sheet + "/export?format=csv&gid=0"
+    assert research.sheet_csv_url(sheet + "/edit?gid=42#gid=42") == sheet + "/export?format=csv&gid=42"
+    published = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSabc/pub?output=csv"
+    assert research.sheet_csv_url(published) == published
+    assert research.sheet_csv_url(sheet + "/export?format=csv&gid=7") == sheet + "/export?format=csv&gid=7"
+
+
+def test_a_sheet_without_a_theme_column_says_so():
+    with pytest.raises(research.ResearchError, match="'theme' column"):
+        research.parse_themes("Here are the first rows of the sheet:\nGrandma, Hunting\n")
+
+
+def test_an_unreachable_sheet_falls_back_to_the_repo_file_and_says_so():
+    cfg = {"themes": {"file": "config/themes.csv", "sheet_csv_url": "http://127.0.0.1:9/sheet.csv"}}
+    themes, where = research.load_themes(config.ROOT, cfg)
+    assert len(themes) == 5 and where == "config/themes.csv (couldn't read the Google Sheet)"
+
+
+def test_themes_lists_what_the_sheet_changed(tmp_path, capsys):
+    rows = (config.ROOT / "config" / "themes.csv").read_text(encoding="utf-8").splitlines()
+    rows = [r for r in rows if not r.startswith("yes,Dogs")]
+    rows = [r.replace("yes,Fishing,Fishing,", "yes,Fishing,Fishing on the lake,") for r in rows]
+    rows = [r.replace("no,Space and sci-fi fans", "yes,Space and sci-fi fans") for r in rows]
+    sheet = tmp_path / "themes.csv"
+    sheet.write_text("\n".join(rows) + "\n", encoding="utf-8")
+    assert cli.main(["--json", "themes", "--themes", str(sheet)]) == 0
+    out = json.loads(capsys.readouterr().out)
+    assert out["ok"] and out["from"] == str(sheet) and len(out["themes"]) == 5
+    assert out["changes"] == ["new: Space and sci-fi fans", "off: Dogs", "changed: Fishing (section)"]

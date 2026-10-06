@@ -43,15 +43,44 @@ def slug(text: str) -> str:
 
 def parse_themes(text: str) -> list[dict]:
     """Rows of the themes sheet with active = yes. Column names are matched loosely."""
+    reader = csv.DictReader(io.StringIO(text.lstrip("\ufeff")))
+    columns = [(c or "").strip().lower() for c in reader.fieldnames or []]
+    if "theme" not in columns:
+        raise ResearchError(f"the themes sheet needs a 'theme' column; its first row is: {', '.join(columns) or '(empty)'}")
     rows = []
-    for raw in csv.DictReader(io.StringIO(text.lstrip("﻿"))):
-        row = {(k or "").strip().lower(): (v or "").strip() for k, v in raw.items()}
+    for raw in reader:
+        row = {(k or "").strip().lower(): (v or "").strip() for k, v in raw.items() if isinstance(v, str) or v is None}
         if row.get("active", "yes").lower() not in ("yes", "y", "true", "1", "x") or not row.get("theme"):
             continue
         row["id"] = slug(row["theme"])
         row["products"] = [p.strip() for p in re.split(r"[;,]", row.get("products", "")) if p.strip()]
         rows.append(row)
     return rows
+
+
+def sheet_csv_url(url: str) -> str:
+    """The CSV download link for a Google Sheet. John can paste the sheet's normal link
+    (.../d/<id>/edit?gid=0#gid=0); a published (/pub) or export link is kept as it is."""
+    url = url.strip()
+    m = re.match(r"https://docs\.google\.com/spreadsheets/d/([A-Za-z0-9_-]{20,})(/[^?#]*)?", url)
+    if not m or (m.group(2) or "").startswith(("/export", "/pub", "/gviz")):
+        return url
+    gid = re.search(r"[?#&]gid=(\d+)", url)
+    return f"https://docs.google.com/spreadsheets/d/{m.group(1)}/export?format=csv&gid={gid.group(1) if gid else 0}"
+
+
+def theme_changes(new: list[dict], old: list[dict]) -> list[str]:
+    """What the sheet changed compared with config/themes.csv, one line each, for the weekly reply."""
+    before = {t["id"]: t for t in old}
+    after = {t["id"]: t for t in new}
+    lines = [f"new: {t['theme']}" for i, t in after.items() if i not in before]
+    lines += [f"off: {t['theme']}" for i, t in before.items() if i not in after]
+    for i, t in after.items():
+        if i in before:
+            changed = [k for k in ("section", "buyers", "angles", "products", "notes") if t.get(k) != before[i].get(k)]
+            if changed:
+                lines.append(f"changed: {t['theme']} ({', '.join(changed)})")
+    return lines
 
 
 def load_themes(root: Path, cfg: dict, override: Path | None = None) -> tuple[list[dict], str]:
@@ -63,19 +92,21 @@ def load_themes(root: Path, cfg: dict, override: Path | None = None) -> tuple[li
             raise ResearchError(f"no active themes in {override}")
         return themes, str(override)
     url = cfg.get("themes", {}).get("sheet_csv_url", "")
+    note = ""
     if url:
         try:
-            with urllib.request.urlopen(url, timeout=30) as r:
+            with urllib.request.urlopen(sheet_csv_url(url), timeout=30) as r:
                 themes = parse_themes(r.read().decode("utf-8"))
             if themes:
                 return themes, "Google Sheet"
-        except (OSError, ValueError, UnicodeDecodeError):
-            pass
+            note = " (the Google Sheet has no active rows)"
+        except (OSError, ValueError, UnicodeDecodeError, ResearchError):
+            note = " (couldn't read the Google Sheet)"
     path = root / cfg.get("themes", {}).get("file", "config/themes.csv")
     themes = parse_themes(path.read_text(encoding="utf-8"))
     if not themes:
         raise ResearchError(f"no active themes in {path}")
-    return themes, str(path.relative_to(root)) if path.is_relative_to(root) else str(path)
+    return themes, (str(path.relative_to(root)) if path.is_relative_to(root) else str(path)) + note
 
 
 def week_id(today: dt.date) -> str:
