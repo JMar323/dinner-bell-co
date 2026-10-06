@@ -34,6 +34,21 @@ Automatic checks:
 Idea file fields are documented in `ideas/papas-keepers-mug.toml` (full) and
 `ideas/nana-est-crewneck.toml` (minimal; the drafter builds the title and fills the tags).
 
+## Order watcher
+
+```
+python -m dbc printify-check          # token works? which Printify shop gets watched?
+python -m dbc --json watch-orders     # what n8n runs every 30 minutes
+python -m dbc watch-orders --dry-run  # see what it would email, without remembering it
+```
+
+Reads Printify orders and emails (through n8n) each new held order once, a reminder for any order
+still on hold after 18 hours, and any order that has issues, is unfulfillable, has a payment
+problem or was canceled. It never approves, sends to production, cancels or edits an order: the
+Printify client only sends GET requests. Keys come from `/etc/dinnerbellco/.env` (docs/keys.md);
+what was already emailed is kept in `$DBC_STATE_DIR/watch-orders.json`. Settings live in
+`config/shop.toml` under `[orders]`.
+
 ## Banned terms
 
 The master list is `/mnt/project-files/training/keywords/banned_terms.txt` in the Claude project.

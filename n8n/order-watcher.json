@@ -1,0 +1,117 @@
+{
+  "name": "Dinner Bell Co: order watcher",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "*/30 7-21 * * *"
+            }
+          ]
+        }
+      },
+      "id": "620b610d-ae22-5e26-a2ef-13a217f64744",
+      "name": "Every 30 min, 7am-10pm",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "command": "cd /opt/dinner-bell-co && python3 -m dbc --json watch-orders"
+      },
+      "id": "b1730394-1589-5211-8b75-e1d4d7c45969",
+      "name": "Run watch-orders",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        220,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// watch-orders prints one JSON object (see dbc/watcher.py).\n// Pass on only the email, and only when there is something to send.\nconst out = JSON.parse($input.first().json.stdout);\nif (!out.email || !out.email.send) return [];\nreturn [{ json: { ...out.email, ok: out.ok, alerts: out.alerts.length } }];"
+      },
+      "id": "2607f871-c6fa-54af-a903-5575e05b96de",
+      "name": "Anything to email?",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        440,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "={{ $json.from }}",
+        "toEmail": "={{ $json.to }}",
+        "subject": "={{ $json.subject }}",
+        "emailFormat": "text",
+        "text": "={{ $json.text }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "66ee9cca-b3b5-5a41-b563-21326421dbfc",
+      "name": "Email John",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        660,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Every 30 min, 7am-10pm": {
+      "main": [
+        [
+          {
+            "node": "Run watch-orders",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run watch-orders": {
+      "main": [
+        [
+          {
+            "node": "Anything to email?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Anything to email?": {
+      "main": [
+        [
+          {
+            "node": "Email John",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/New_York"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "pinData": {},
+  "tags": [],
+  "versionId": "7c01e260-72e2-514e-91f8-4222906d4748"
+}
