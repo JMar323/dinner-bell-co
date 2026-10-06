@@ -202,7 +202,7 @@ def test_a_themes_file_from_the_sheet_overrides_the_repo_copy(tmp_path):
 
 def test_a_normal_sheet_link_becomes_its_csv_download_link():
     sheet = "https://docs.google.com/spreadsheets/d/1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms"
-    assert research.sheet_csv_url(sheet + "/edit?usp=sharing") == sheet + "/export?format=csv&gid=0"
+    assert research.sheet_csv_url(sheet + "/edit?usp=sharing") == sheet + "/export?format=csv"
     assert research.sheet_csv_url(sheet + "/edit?gid=42#gid=42") == sheet + "/export?format=csv&gid=42"
     published = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSabc/pub?output=csv"
     assert research.sheet_csv_url(published) == published

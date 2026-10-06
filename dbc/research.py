@@ -65,8 +65,8 @@ def sheet_csv_url(url: str) -> str:
     m = re.match(r"https://docs\.google\.com/spreadsheets/d/([A-Za-z0-9_-]{20,})(/[^?#]*)?", url)
     if not m or (m.group(2) or "").startswith(("/export", "/pub", "/gviz")):
         return url
-    gid = re.search(r"[?#&]gid=(\d+)", url)
-    return f"https://docs.google.com/spreadsheets/d/{m.group(1)}/export?format=csv&gid={gid.group(1) if gid else 0}"
+    gid = re.search(r"[?#&]gid=(\d+)", url)  # no gid: Google sends the first tab (it isn't always gid 0)
+    return f"https://docs.google.com/spreadsheets/d/{m.group(1)}/export?format=csv" + (f"&gid={gid.group(1)}" if gid else "")
 
 
 def theme_changes(new: list[dict], old: list[dict]) -> list[str]:

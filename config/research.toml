@@ -30,7 +30,7 @@ file = "config/themes.csv"
 # Optional: John's Google Sheet, shared as "anyone with the link can view". Paste its normal link
 # (https://docs.google.com/spreadsheets/d/<sheet id>/edit...); `python3 -m dbc themes` shows the CSV
 # link made from it. When set and readable it wins over the file above; config/themes.csv stays the backup.
-sheet_csv_url = ""
+sheet_csv_url = "https://docs.google.com/spreadsheets/d/1phzuyHG_zpxfcfWGurf8q18nkPlBK-GCNXDbH--XY4M/edit?usp=sharing"  # "Dinner Bell Co themes", John 2026-10-06
 
 [products]
 # Products the research may suggest (John 2026-10-06: mugs, shirts, tops, hats). Only the ones in
