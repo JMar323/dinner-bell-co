@@ -1,0 +1,76 @@
+# Product types the drafter knows. Prices need John's OK before any listing goes live.
+# price_status: "approved" (John said yes) or "pending" (the draft gets a warning).
+# confirm: spec lines not yet checked against the print provider; each one becomes a warning.
+
+[mug11]
+kind = "mug"
+noun = "mug"
+title_noun = "Mug"
+size_label = "11oz"
+heading = "☕ The mug"
+price = 19.99
+price_status = "approved"      # John 2026-10-06
+provider = "District Photo"
+specs = [
+  "11oz white ceramic, glossy finish",
+  "Dishwasher and microwave safe",
+]
+confirm = ["Dishwasher and microwave safe: confirm in the District Photo mug specs"]
+attributes = { primary_color = "White" }
+tag_seeds = ["custom mug", "personalized mug", "mug with names", "coffee mug gift", "name mug"]
+
+[mug15]
+kind = "mug"
+noun = "mug"
+title_noun = "Mug"
+size_label = "15oz"
+heading = "☕ The mug"
+price = 0.0
+price_status = "pending"       # no 15oz price proposed yet
+provider = "District Photo"
+specs = [
+  "15oz white ceramic, glossy finish",
+  "Dishwasher and microwave safe",
+]
+confirm = [
+  "Dishwasher and microwave safe: confirm in the District Photo mug specs",
+  "15oz price not set yet",
+]
+attributes = { primary_color = "White" }
+tag_seeds = ["custom mug", "personalized mug", "mug with names", "large coffee mug", "name mug"]
+
+[tee]
+kind = "apparel"
+noun = "shirt"
+title_noun = "Shirt"
+size_label = "Unisex Tee"
+heading = "👕 The shirt"
+price = 26.99
+price_status = "pending"       # recommended 2026-10-05, waiting on John
+provider = "Monster Digital"
+specs = [
+  "Bella+Canvas 3001 unisex tee, soft ring-spun cotton",
+  "Unisex sizes S to 3XL; see the size chart in the photos",
+  "Wash inside out in cold water, tumble dry low",
+]
+confirm = ["Fabric blend and size range: confirm in the Printify listing for Bella+Canvas 3001 at Monster Digital"]
+attributes = {}
+tag_seeds = ["custom shirt", "personalized tee", "shirt with names", "custom name shirt", "family names shirt"]
+
+[crewneck]
+kind = "apparel"
+noun = "sweatshirt"
+title_noun = "Sweatshirt"
+size_label = "Crewneck"
+heading = "🧶 The sweatshirt"
+price = 39.99
+price_status = "pending"       # recommended 2026-10-05, waiting on John
+provider = "Monster Digital"
+specs = [
+  "Gildan 18000 unisex crewneck sweatshirt, cotton-poly blend",
+  "Unisex sizes S to 3XL; see the size chart in the photos",
+  "Wash inside out in cold water, tumble dry low",
+]
+confirm = ["Fabric blend and size range: confirm in the Printify listing for Gildan 18000"]
+attributes = {}
+tag_seeds = ["custom sweatshirt", "personalized crewneck", "custom crewneck", "christmas sweatshirt", "family sweatshirt"]

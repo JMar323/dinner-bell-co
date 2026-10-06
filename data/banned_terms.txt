@@ -1,0 +1,128 @@
+# Dinner Bell Co: banned and caution terms for listings and designs
+# Seeded 2026-10-06 from research/niches.md, research/customers.md section 11,
+# research/sample-order-1.md section 4 and research/sources/2026-10-05-samples-uspto.md,
+# 2026-10-05-niche-rescore-5-lines.md and 2026-10-06-gang-wording.md.
+# This is a screening list, not legal clearance. Add every new USPTO hit here.
+#
+# Format: phrase | level | products | why
+#   level:    block   = the listing drafter fails the draft
+#             caution = the draft passes with a warning John must read
+#   products: all, mug, apparel (tee + crewneck)
+# Matching ignores case, apostrophes and punctuation, and also catches a trailing "s"
+# ("Peterbilt" catches "Peterbilts"; "trucker's wife" catches "truckers wife").
+
+# --- House rules -------------------------------------------------------------
+gang | block | all | John's rule 2026-10-06: reads as crime to some buyers; say crew or buddies
+clan | block | all | sounds like Klan (gang-wording research)
+squad | caution | all | research says avoid; prefer crew or buddies
+tribe | caution | all | research says avoid; prefer crew or buddies
+thug | block | all | gangster parody style (gang-wording research)
+officially licensed | block | all | Etsy prohibited claim
+licensed | caution | all | never imply a license we don't hold
+free shipping | block | all | Etsy 2026 title/tag guidance: no shipping or sale text
+on sale | block | all | Etsy 2026 guidance: no sale text
+master baiter | block | all | crude (customers.md section 11)
+
+# --- Grandma / Nana ------------------------------------------------------------
+grammy | block | all | GRAMMY, Recording Academy, apparel (customers.md 11)
+hot glamma | block | all | live filing (customers.md 11)
+glamma | caution | all | coined word, check USPTO first (niches.md)
+mama bear | block | all | variants have live filings (niches.md, customers.md 11)
+mimi and me | block | apparel | MIMI & ME, SN 98756532, class 25 (samples-uspto)
+girl dad | block | all | actively enforced (niches.md)
+boy mom | block | all | actively enforced (niches.md)
+
+# --- Trucker / blue-collar ---------------------------------------------------------
+the only thing tougher than a trucker is a trucker's wife | block | all | Reg. 3904166
+trucker's daughter | block | all | Reg. 6252440
+trucker wives | block | all | Reg. 4939349
+keep on truckin | block | all | R. Crumb copyright figure (niches.md)
+i heart trucking | block | apparel | Women In Trucking, SN 98561900 (samples-uspto)
+i love trucking | caution | apparel | close to I [heart] TRUCKING layout
+on the road since | caution | apparel | BLUCHER ON THE ROAD SINCE 1214, Reg. 6311903; use DRIVING SINCE / TRUCKING SINCE
+welder up | block | all | TV brand, classes 25 and 21 (samples-uspto)
+blue collar | caution | apparel | crowded class 25 composites; only inside a longer phrase, never alone or with CO./MADE
+working class | caution | apparel | crowded class 25; prefer Working Man Since [year]
+working class hero | block | apparel | live composite (samples-uspto)
+hardworking gentlemen | block | apparel | SN 90875526
+peterbilt | block | all | truck brand
+kenworth | block | all | truck brand
+mack trucks | block | all | truck brand
+mack | caution | all | truck brand; fine only as a buyer's name
+freightliner | block | all | truck brand
+volvo | block | all | vehicle brand
+ford | caution | all | vehicle brand; fine only as a buyer's name
+chevy | block | all | vehicle brand
+chevrolet | block | all | vehicle brand
+dodge ram | block | all | vehicle brand
+ram trucks | block | all | vehicle brand
+harley davidson | block | all | vehicle brand
+harley | caution | all | vehicle brand; fine only as a buyer's name
+john deere | block | all | Deere marks and green/yellow trade dress
+deere | block | all | Deere marks
+case ih | block | all | farm equipment brand
+kubota | block | all | farm equipment brand
+farmall | block | all | farm equipment brand
+caterpillar | block | all | CAT equipment brand
+lincoln electric | block | all | welding brand
+miller electric | block | all | welding brand
+snap on | block | all | tool brand
+mac tools | block | all | tool brand
+milwaukee tool | block | all | tool brand
+dewalt | block | all | tool brand, yellow/black trade dress
+carhartt | block | all | workwear brand
+dickies | block | all | workwear brand
+ibew | block | all | union mark
+yellowstone | block | all | Paramount; Dutton Ranch marks litigated
+dutton ranch | block | all | Paramount / Yellowstone
+
+# --- Fishing ----------------------------------------------------------------
+reel cool | block | mug | REEL COOL, drinkware, Reg. 4397109
+reel cool | caution | apparel | check class 25 before use
+fishin buddie | block | all | FISHIN BUDDIE (customers.md 11)
+hooked on fishing | block | all | HOOKED ON FISHING (customers.md 11)
+catch and keep | block | apparel | CATCH & KEEP, Reg. 6932672
+catch and keep | caution | mug | check class 21 before use
+keepers only | block | all | KEEPERS ONLY, Reg. 7607213
+keepers | caution | apparel | live apparel marks; fine on mugs; keep the title big or use Papa's Fishing Crew
+huk | block | all | fishing apparel brand
+bass pro | block | all | retailer brand
+cabela's | block | all | retailer brand
+rapala | block | all | tackle brand
+yeti | block | all | drinkware brand
+happy camper | caution | apparel | pending apparel application (niches.md)
+
+# --- Hunting ----------------------------------------------------------------
+realtree | block | all | branded camo
+mossy oak | block | all | branded camo
+kryptek | block | all | branded camo
+sitka | block | all | branded camo
+browning | block | all | Buckmark brand
+buckmark | block | all | Browning
+buck commander | block | all | brand
+duck commander | block | all | brand
+duck dynasty | block | all | TV brand
+
+# --- Characters and entertainment -------------------------------------------
+grinch | block | all | character
+disney | block | all | brand / characters
+peanuts | block | all | characters
+snoopy | block | all | character
+smokey bear | block | all | protected character
+elf | caution | all | the movie; generic Christmas elf art is fine, no movie quotes
+national park | caution | all | no park logos (niches.md)
+
+# --- Political ----------------------------------------------------------------
+maga | block | all | pending, Trump-affiliated owners (samples-uspto)
+make america great again | block | all | Reg. 5921166
+let's go brandon | block | all | partisan slogan (brand rule)
+don't tread on me | block | all | politically charged symbol (brand rule)
+america 250 | block | all | licensed semiquincentennial marks
+
+# --- Unchecked phrases: run through USPTO before use (customers.md 11) ---------
+best truckin' dad ever | caution | all | not yet USPTO-checked
+mine drives 18 | caution | all | not yet USPTO-checked
+may all roads lead you back to me | caution | all | not yet USPTO-checked
+million mile club | caution | all | not yet USPTO-checked
+fishing buddies | caution | all | not yet USPTO-checked
+best catch | caution | all | fishing marks are common; re-screen first (samples-uspto)

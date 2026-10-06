@@ -1,0 +1,35 @@
+# Example of a minimal idea: no title or tags given, so the drafter builds them.
+id = "nana-est-crewneck"
+line = "grandma"
+product = "crewneck"
+section = "Grandma"
+
+recipient = "Nana"
+recipient_alt = "Grandma"
+theme = "grandma"
+motif = "Grandkids Names"
+design_text = ["Nana Est. 2019", "names of the grandkids"]
+
+keywords = ["nana sweatshirt", "custom nana shirt", "grandma sweatshirt", "nana gift"]
+
+opening = "A personalized Nana sweatshirt with the year she became Nana and every grandkid's name underneath. Made for the woman who keeps the whole family together."
+order_emoji = "💕"
+how_to_order = [
+  "Type the year she became Nana.",
+  "Add one grandkid's name per box.",
+]
+
+[attributes]
+holiday = "Christmas"
+recipient = "Grandparents, Women"
+
+[[personalization]]
+question = "Year she became Nana"
+instructions = "Four digits, like 2019."
+max_chars = 4
+
+[[personalization]]
+repeat = 4
+question = "Grandkid's name {n}"
+instructions = "One name per box, as it should print. Max 10 letters. We print exactly what you type."
+max_chars = 10

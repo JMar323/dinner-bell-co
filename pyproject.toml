@@ -1,0 +1,12 @@
+[project]
+name = "dinner-bell-co"
+version = "0.1.0"
+description = "Dinner Bell Co Etsy print-on-demand automation"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
