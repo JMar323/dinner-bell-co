@@ -21,13 +21,13 @@
     "bass fishing mug",
     "pawpaw mug",
     "grandpa coffee mug",
-    "fishing lover gift"
+    "papas keepers mug"
   ],
-  "description": "A personalized Papa mug with every grandkid's name on a fish he'd be proud to keep. Printed exactly as you type it, for the grandpa who'd rather be on the water.\n\n🎣 How to order\n1. Type what the grandkids call him, as it should print (Papa's, Grandpa's, Pawpaw's).\n2. Add one grandkid's name per box.\n3. Double-check spelling. We print exactly what you type.\n\n☕ The mug\n• 11oz white ceramic, glossy finish\n• Design printed on both sides: \"Papa's Keepers\" on one side, the fish with names on the other\n• Dishwasher and microwave safe\n\n🎄 Christmas timing\nMade in 3–6 business days, then 2–5 days shipping (US). Order by Tuesday, December 8 for Christmas.\n\n💛 Our promise\nBecause each mug is made just for you, we can't take returns or exchanges. If it arrives damaged, misprinted, or different from what you typed, message us within 14 days with a photo and we'll replace it free.\n\nDesigned by Dinner Bell Co with the help of digital and AI tools. Names are set as real text. Printed and shipped by our production partner, Printify, from a US print shop.",
+  "description": "A personalized Papa mug with every grandkid's name on a fish. Papa caught his limit, and he's keeping every one. Printed exactly as you type it, for the grandpa who'd rather be on the water.\n\n🎣 How to order\n1. Type what the grandkids call him, as it should print (Papa, Grandpa, Pawpaw).\n2. Add one grandkid's name per box.\n3. Double-check spelling. We print exactly what you type.\n\n☕ The mug\n• 11oz white ceramic, glossy finish\n• Design printed on both sides: \"Papa Caught His Limit\" on one side, the fish with names on the other\n• Dishwasher and microwave safe\n\n🎄 Christmas timing\nMade in 3–6 business days, then 2–5 days shipping (US). Order by Tuesday, December 8 for Christmas.\n\n💛 Our promise\nBecause each mug is made just for you, we can't take returns or exchanges. If it arrives damaged, misprinted, or different from what you typed, message us within 14 days with a photo and we'll replace it free.\n\nDesigned by Dinner Bell Co with the help of digital and AI tools. Names are set as real text. Printed and shipped by our production partner, Printify, from a US print shop.",
   "personalization": [
     {
       "question": "What do the grandkids call him?",
-      "instructions": "Type it as it should print: Papa's, Grandpa's, Pawpaw's. Max 9 characters.",
+      "instructions": "Type it as it should print: Papa, Grandpa, Pawpaw. Max 9 characters.",
       "max_chars": 9,
       "required": true
     },
@@ -57,7 +57,7 @@
     }
   ],
   "design_text": [
-    "Papa's Keepers"
+    "Papa Caught His Limit"
   ],
   "price": 19.99,
   "price_status": "approved",

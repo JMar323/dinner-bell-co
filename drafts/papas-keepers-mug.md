@@ -8,13 +8,13 @@ Personalized Papa Mug with Grandkids Names on Fish, Custom Fishing Mug for Grand
 
 ## Tags (13)
 
-`papa fishing mug` · `grandpa fishing gift` · `custom fishing mug` · `grandkids names mug` · `personalized papa` · `fishing grandpa mug` · `gift for papa` · `papa christmas gift` · `fisherman gift` · `bass fishing mug` · `pawpaw mug` · `grandpa coffee mug` · `fishing lover gift`
+`papa fishing mug` · `grandpa fishing gift` · `custom fishing mug` · `grandkids names mug` · `personalized papa` · `fishing grandpa mug` · `gift for papa` · `papa christmas gift` · `fisherman gift` · `bass fishing mug` · `pawpaw mug` · `grandpa coffee mug` · `papas keepers mug`
 
 ## Personalization
 
 | # | Question | Instructions | Max |
 |---|---|---|---|
-| 1 | What do the grandkids call him? | Type it as it should print: Papa's, Grandpa's, Pawpaw's. Max 9 characters. | 9 |
+| 1 | What do the grandkids call him? | Type it as it should print: Papa, Grandpa, Pawpaw. Max 9 characters. | 9 |
 | 2 | Grandkid's name 1 | One name per box, as it should print. Max 7 letters. We print exactly what you type. | 7 |
 | 3 | Grandkid's name 2 | One name per box, as it should print. Max 7 letters. We print exactly what you type. | 7 |
 | 4 | Grandkid's name 3 | One name per box, as it should print. Max 7 letters. We print exactly what you type. | 7 |
@@ -22,16 +22,16 @@ Personalized Papa Mug with Grandkids Names on Fish, Custom Fishing Mug for Grand
 
 ## Description
 
-A personalized Papa mug with every grandkid's name on a fish he'd be proud to keep. Printed exactly as you type it, for the grandpa who'd rather be on the water.
+A personalized Papa mug with every grandkid's name on a fish. Papa caught his limit, and he's keeping every one. Printed exactly as you type it, for the grandpa who'd rather be on the water.
 
 🎣 How to order
-1. Type what the grandkids call him, as it should print (Papa's, Grandpa's, Pawpaw's).
+1. Type what the grandkids call him, as it should print (Papa, Grandpa, Pawpaw).
 2. Add one grandkid's name per box.
 3. Double-check spelling. We print exactly what you type.
 
 ☕ The mug
 • 11oz white ceramic, glossy finish
-• Design printed on both sides: "Papa's Keepers" on one side, the fish with names on the other
+• Design printed on both sides: "Papa Caught His Limit" on one side, the fish with names on the other
 • Dishwasher and microwave safe
 
 🎄 Christmas timing

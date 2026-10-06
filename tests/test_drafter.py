@@ -103,7 +103,8 @@ def test_banned_terms_respect_product():
     issues = run(on_tee)[1]
     assert not any("reel cool" in str(i).lower() for i in errors(issues))
     assert any("reel cool" in str(i).lower() for i in issues)
-    keepers_tee = {**PAPA, "product": "tee", "title": "Personalized Papa Shirt with Grandkids Names"}
+    keepers_tee = {**PAPA, "product": "tee", "title": "Personalized Papa Shirt with Grandkids Names",
+                   "design_text": ["Papa's Keepers"]}
     assert "'keepers'" in messages(run(keepers_tee)[1])
 
 

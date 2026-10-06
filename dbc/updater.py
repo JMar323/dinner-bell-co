@@ -2,8 +2,8 @@
 
 Only ever fast-forwards. If someone edited a tracked file on the server, or the server's branch
 went its own way, it changes nothing and says what to do. After a pull it runs the drafter on the
-Papa's Keepers idea with the new code, so a broken merge shows up in the morning email instead of
-in Monday's research run. It never pushes.
+fishing mug idea with the new code, so a broken merge shows up in the morning email instead of in
+Monday's research run. It never pushes.
 """
 
 from __future__ import annotations
@@ -42,7 +42,7 @@ def smoke_test(root: Path) -> str | None:
     except ValueError:
         return f"the drafter printed something that isn't JSON: {p.stdout[:300]}"
     if not result.get("ok"):
-        return "the Papa's Keepers draft now fails its checks: " + "; ".join(
+        return "the fishing mug draft now fails its checks: " + "; ".join(
             f"{e['field']}: {e['message']}" for e in result.get("errors", []))
     return None
 
