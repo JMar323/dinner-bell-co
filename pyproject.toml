@@ -2,7 +2,7 @@
 name = "dinner-bell-co"
 version = "0.1.0"
 description = "Dinner Bell Co Etsy print-on-demand automation"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 dependencies = []
 
 [project.optional-dependencies]

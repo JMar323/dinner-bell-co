@@ -15,7 +15,7 @@ the alert channel. Setup details: [deploy/n8n.md](../deploy/n8n.md).
 ```
 dinner-bell-co/
 ├── README.md              how to run it, approval rules
-├── pyproject.toml         Python 3.11+, no runtime dependencies
+├── pyproject.toml         Python 3.10+, no runtime dependencies
 ├── .env.example           the name of every secret, never a value
 ├── config/
 │   ├── shop.toml          shop facts, both disclosures, promise, holiday order-by date
@@ -28,14 +28,13 @@ dinner-bell-co/
 │   ├── drafter.py         idea -> title, 13 tags, description, personalization   [built]
 │   ├── checks.py          automatic listing checks                                [built]
 │   ├── banned.py          banned/caution term matcher                             [built]
-│   ├── cli.py             python -m dbc draft | check                              [built]
-│   ├── printify.py        Printify API client (read-only first)                   [next]
+│   ├── cli.py             python -m dbc draft | check | printify-check | watch-orders [built]
+│   ├── printify.py        Printify API client (read-only, GET only)               [built]
 │   ├── etsy.py            Etsy OAuth (PKCE) + receipts/listings                   [next]
-│   ├── alerts.py          email alerts                                            [next]
-│   ├── watcher.py         held-order watcher                                      [next]
+│   ├── watcher.py         held-order watcher (emails via n8n)                     [built]
 │   └── stats.py           weekly stats pull                                       [next]
 ├── deploy/n8n.md          how n8n on the VPS runs the Python commands
-├── n8n/                   exported n8n workflow JSON, one per routine             [next]
+├── n8n/                   exported n8n workflows: order watcher, error alert, setup check [built]
 ├── docs/                  this plan, keys.md
 └── tests/                 pytest; CI runs them on every push
 ```
@@ -55,7 +54,7 @@ own credential store. See [keys.md](keys.md).
 ## Build order
 
 1. Listing drafter + checks + banned terms (done 2026-10-06).
-2. Printify client + order watcher + its n8n workflow (needs the Printify token; useful from the first order).
+2. Printify client + order watcher + its n8n workflow (built 2026-10-06; goes live once the Printify token is on the VPS).
 3. Etsy app + OAuth, then personalization text in the watcher (needs the shop open first).
 4. Weekly stats (needs the Etsy app and a few weeks of listings).
 5. Weekly idea research (needs an Anthropic API key; most useful once art is underway).

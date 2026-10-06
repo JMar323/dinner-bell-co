@@ -34,3 +34,12 @@ order_by_label = "Tuesday, December 8"
 
 [how_to_order]
 last_step = "Double-check spelling. We print exactly what you type."
+
+[orders]
+# Order watcher (dbc watch-orders). Read-only: John approves every order in Printify.
+review_within_hours = 24       # our promise: held orders reviewed within 1 day (John, 2026-10-06)
+reminder_after_hours = 18      # one reminder email per order still on hold after this long
+lookback_days = 30             # ignore orders older than this
+max_pages = 10                 # 10 orders a page, so the newest 100 orders at most
+error_repeat_hours = 6         # if Printify keeps failing, repeat the same error email at most this often
+timezone = "America/New_York"  # times in alert emails (Ohio)

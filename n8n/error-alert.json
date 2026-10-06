@@ -1,0 +1,60 @@
+{
+  "name": "Dinner Bell Co: error alert",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "0e66798a-52f3-5f32-9c60-86eb3171d864",
+      "name": "When a routine fails",
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "CHANGE-ME@example.com",
+        "toEmail": "CHANGE-ME@example.com",
+        "subject": "=Dinner Bell Co: {{ $json.workflow.name }} failed",
+        "emailFormat": "text",
+        "text": "={{ $json.workflow.name }} failed.\n\nStep: {{ $json.execution.lastNodeExecuted }}\nError: {{ $json.execution.error.message }}\n\nOpen it: {{ $json.execution.url }}\n\nUntil it's fixed, check Printify → Orders by hand.",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "66ee9cca-b3b5-5a41-b563-21326421dbfc",
+      "name": "Email John",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        220,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "When a routine fails": {
+      "main": [
+        [
+          {
+            "node": "Email John",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/New_York"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "pinData": {},
+  "tags": [],
+  "versionId": "5b970319-7c05-5b6b-8a03-4b47dade8719"
+}

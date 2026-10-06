@@ -1,0 +1,161 @@
+{
+  "name": "Dinner Bell Co: setup check",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "b94a40b3-62b9-5801-a552-31db9f3de998",
+      "name": "Test workflow",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "command": "cd ~/dinner-bell-co && python3 -m dbc --json draft ideas/papas-keepers-mug.toml --out /tmp/dbc-drafts"
+      },
+      "id": "d9f6693a-d706-5d85-a3dd-a3237abfe3f8",
+      "name": "Run: Drafter",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Turns the command's JSON into a one-line verdict you can read in the output panel.\nconst out = JSON.parse($input.first().json.stdout);\nreturn [{ json: { check: \"Drafter\", verdict: out.ok ? \"PASS\" : \"FAIL\", ...out } }];"
+      },
+      "id": "1e8d01a1-884f-5abc-b64f-bba5dbdd00b9",
+      "name": "Result: Drafter",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "command": "cd ~/dinner-bell-co && python3 -m dbc --json printify-check"
+      },
+      "id": "47608165-4bc0-5cb9-9585-56f32f94ab5a",
+      "name": "Run: Printify token",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        240,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Turns the command's JSON into a one-line verdict you can read in the output panel.\nconst out = JSON.parse($input.first().json.stdout);\nreturn [{ json: { check: \"Printify token\", verdict: out.ok ? \"PASS\" : \"FAIL\", ...out } }];"
+      },
+      "id": "8b46af2f-840d-5465-8901-65a3dce5cb20",
+      "name": "Result: Printify token",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "command": "cd ~/dinner-bell-co && python3 -m dbc --json watch-orders --dry-run"
+      },
+      "id": "188a8b45-228d-5bd5-bcf0-6e3a6f73ebcc",
+      "name": "Run: Order watcher (dry run)",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        240,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Turns the command's JSON into a one-line verdict you can read in the output panel.\nconst out = JSON.parse($input.first().json.stdout);\nreturn [{ json: { check: \"Order watcher (dry run)\", verdict: out.ok ? \"PASS\" : \"FAIL\", ...out } }];"
+      },
+      "id": "9c5041c4-f70d-51e7-8045-88df0ef645ea",
+      "name": "Result: Order watcher (dry run)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "Test workflow": {
+      "main": [
+        [
+          {
+            "node": "Run: Drafter",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Run: Printify token",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Run: Order watcher (dry run)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run: Drafter": {
+      "main": [
+        [
+          {
+            "node": "Result: Drafter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run: Printify token": {
+      "main": [
+        [
+          {
+            "node": "Result: Printify token",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Run: Order watcher (dry run)": {
+      "main": [
+        [
+          {
+            "node": "Result: Order watcher (dry run)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timezone": "America/New_York"
+  },
+  "meta": {
+    "templateCredsSetupCompleted": false
+  },
+  "pinData": {},
+  "tags": [],
+  "versionId": "3ba59737-c733-5ce6-ac83-7126846b19f7"
+}
