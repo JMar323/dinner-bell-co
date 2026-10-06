@@ -352,3 +352,22 @@ def test_env_file_is_read_without_overriding(tmp_path, monkeypatch):
     assert os.environ["DBC_T4"] == "already-set"
     for k in ("DBC_T1", "DBC_T2", "DBC_T3"):
         monkeypatch.delenv(k)
+
+
+def test_vendored_toml_reader_matches_tomllib():
+    from dbc._vendor import tomli
+    raw = (config.CONFIG_DIR / "shop.toml").read_text(encoding="utf-8")
+    assert tomli.loads(raw) == config.tomllib.loads(raw)
+
+
+def test_env_file_prefers_dbc_env_file_then_home(tmp_path, monkeypatch):
+    monkeypatch.setenv("DBC_ENV_FILE", str(tmp_path / "x.env"))
+    assert config.env_file() == tmp_path / "x.env"
+    monkeypatch.delenv("DBC_ENV_FILE")
+    home_env = tmp_path / ".config" / "dinnerbellco" / ".env"
+    monkeypatch.setattr(config, "ENV_FILES", (home_env, tmp_path / "etc.env"))
+    (tmp_path / "etc.env").write_text("")
+    assert config.env_file() == tmp_path / "etc.env"
+    home_env.parent.mkdir(parents=True)
+    home_env.write_text("")
+    assert config.env_file() == home_env

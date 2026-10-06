@@ -6,8 +6,9 @@ Never into chat, the repo, GitHub issues, or /mnt/project-files.
 ## Where to store them
 
 1. **Master copy:** your password manager, one entry per key.
-2. **Working copy:** on the VPS at `/etc/dinnerbellco/.env`, readable only by the user n8n runs
-   as (`chmod 600`). The Python commands read it at start-up, so the keys never pass through n8n
+2. **Working copy:** on the VPS at `~/.config/dinnerbellco/.env` in the home folder of the user n8n
+   runs as (on John's xCloud server: `u1_flow2`), readable only by that user (`chmod 600`).
+   `/etc/dinnerbellco/.env` also works on servers with sudo. The Python commands read it at start-up, so the keys never pass through n8n
    workflow fields or its execution logs. `.env.example` in the repo lists the variable names with
    no values.
 3. **Email login:** in n8n's own credential store (Credentials → SMTP or Gmail), not in `.env`.
@@ -44,36 +45,36 @@ shell command line (where it would land in your shell history).
    with today's date. Printify won't show it again. It lasts 1 year: add a reminder for early
    October 2027.
 
-**2. Create the secrets file and state folder** (SSH into the VPS; `N8NUSER` is the user n8n runs
-as, see [deploy/n8n.md](../deploy/n8n.md) step 1; with Docker and the custom image use `1000`)
+**2. Get the code and create the secrets file** (xCloud → your n8n site → Terminal. It runs as
+`u1_flow2`, the same user as n8n, so no sudo is needed)
 
 ```
-sudo install -d -m 700 -o N8NUSER /etc/dinnerbellco
-sudo install -m 600 -o N8NUSER /opt/dinner-bell-co/.env.example /etc/dinnerbellco/.env
-sudo install -d -m 700 -o N8NUSER /var/lib/dinnerbellco
+cd ~ && git clone https://github.com/JMar323/dinner-bell-co.git
+mkdir -p ~/.config/dinnerbellco && chmod 700 ~/.config/dinnerbellco
+cp ~/dinner-bell-co/.env.example ~/.config/dinnerbellco/.env && chmod 600 ~/.config/dinnerbellco/.env
 ```
 
 **3. Paste the token into the file**
 
 ```
-sudo -u N8NUSER nano /etc/dinnerbellco/.env
+nano ~/.config/dinnerbellco/.env
 ```
 
 - On the `PRINTIFY_TOKEN=` line, paste the token right after the `=` (no spaces, no quotes).
-- Fill in `ALERT_EMAIL_TO=` (where alerts go) and `ALERT_EMAIL_FROM=` (the address your n8n SMTP
-  credential sends as). Leave `DBC_STATE_DIR=/var/lib/dinnerbellco` as it is.
+- Fill in `ALERT_EMAIL_TO=` (where alerts go) and `ALERT_EMAIL_FROM=` (the address your n8n email
+  credential sends as). Leave the other lines empty.
 - Save with Ctrl+O, Enter, then exit with Ctrl+X.
 
 **4. Check it works without showing it**
 
 ```
-cd /opt/dinner-bell-co && sudo -u N8NUSER python3 -m dbc printify-check
+cd ~/dinner-bell-co && python3 -m dbc printify-check
 ```
 
 Expected: `token works; 1 shop(s) in Printify` (or 0 before you connect Etsy) and a line saying
 which shop the watcher uses. The token itself is never printed. `401` means it was mistyped or
 revoked: generate a new one and paste it again. Then run the **setup-check** workflow in n8n
-(deploy/n8n.md step 7) to confirm n8n sees it too.
+(deploy/n8n.md) to confirm n8n sees it too.
 
 **If the token ever leaks** (pasted somewhere it shouldn't be): delete it in Printify →
 Connections straight away, generate a new one and repeat step 3.

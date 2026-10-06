@@ -11,8 +11,8 @@ outage shows up as `"ok": false` (and, for the watcher, a ready-made error email
 crashing the n8n execution. A real crash (bad config, missing file, `ALERT_EMAIL_TO` not set)
 exits non-zero, the Execute Command node fails, and the error workflow emails John.
 
-The commands read their keys from `/etc/dinnerbellco/.env` themselves, so no key ever sits in a
-workflow field or an n8n execution log.
+The commands read their keys from `~/.config/dinnerbellco/.env` (or `/etc/dinnerbellco/.env`)
+themselves, so no key ever sits in a workflow field or an n8n execution log.
 
 ## Workflows in `n8n/`
 
@@ -25,46 +25,49 @@ workflow field or an n8n execution log.
 The watcher is read-only: the Printify client can only send GET requests, and a test fails if
 anyone adds a way to approve, send or cancel an order.
 
-## One-time setup (native n8n: installed with npm or as a system service)
+## One-time setup on John's server (xCloud one-click n8n)
 
-1. **Find the user n8n runs as:** `ps -o user= -p $(pgrep -f "n8n start" | head -1)` (often `n8n` or
-   your own login). Commands below call it `N8NUSER`.
-2. **Get the code** (as that user): `sudo -u N8NUSER git clone https://github.com/JMar323/dinner-bell-co.git /opt/dinner-bell-co`
-   (create `/opt/dinner-bell-co` owned by N8NUSER first if needed). The repo is public, so no
-   deploy key is needed to read it. Check `python3 --version` is 3.11 or newer.
-3. **Secrets file and state folder:** follow [docs/keys.md → Put the Printify token on the VPS](../docs/keys.md#put-the-printify-token-on-the-vps).
-4. **Enable the Execute Command node.** n8n 2.x blocks it by default. Add `NODES_EXCLUDE="[]"`
-   to n8n's environment (systemd: `sudo systemctl edit n8n`, add `Environment=NODES_EXCLUDE=[]`
-   under `[Service]`; pm2/.env: add the line) and restart n8n. Anyone who can edit workflows can
-   then run shell commands as N8NUSER, so keep n8n's login behind 2FA.
-5. **Email credential:** n8n → Credentials → New → SMTP (Google Workspace: smtp.gmail.com, port 465,
+Checked 2026-10-06 from the xCloud terminal: n8n runs natively (`/usr/bin/n8n`, not Docker) as the
+user `u1_flow2`, the terminal runs as that same user without sudo, Python is 3.10.12 and git is
+installed. So the code and keys live in `u1_flow2`'s home folder and nothing needs sudo.
+Python 3.10 works: the repo carries its own copy of the TOML reader that 3.11 has built in.
+
+1. **Code and keys:** in the xCloud terminal, follow [docs/keys.md → Put the Printify token on the VPS](../docs/keys.md#put-the-printify-token-on-the-vps)
+   (clone to `~/dinner-bell-co`, keys in `~/.config/dinnerbellco/.env`).
+2. **Enable the Execute Command node:** xCloud → your n8n site → **Environment** → add the line
+   `NODES_EXCLUDE=[]` → **Save** (n8n restarts). n8n 2.x blocks this node by default. Anyone who can
+   log in to n8n can then run commands as `u1_flow2`, so keep n8n's login behind 2FA.
+3. **Email credential:** n8n → Credentials → New → SMTP (Google Workspace: smtp.gmail.com, port 465,
    SSL on, your address, an app password from Google Account → Security → App passwords).
-6. **Import the workflows:** n8n → Workflows → Add workflow → ⋯ → Import from file, once per file in
-   `n8n/`. In each Send Email node pick the SMTP credential. In **error-alert**, replace both
-   `CHANGE-ME@example.com` with your address. Then open **order-watcher** → ⋯ → Settings →
-   Error workflow → "Dinner Bell Co: error alert" → Save.
-7. **Smoke test:** open **setup-check** and click Test workflow. Expected:
+4. **Import the workflows:** n8n → Workflows → Add workflow → ⋯ → Import from file, once per file in
+   `n8n/` (download them from GitHub or `~/dinner-bell-co/n8n/`). In each Send Email node pick the
+   SMTP credential. In **error-alert**, replace both `CHANGE-ME@example.com` with your address. Then
+   open **order-watcher** → ⋯ → Settings → Error workflow → "Dinner Bell Co: error alert" → Save.
+5. **Smoke test:** open **setup-check** and click Test workflow. Expected:
    - Drafter: PASS, with one warning (mug care specs to confirm).
    - Printify token: PASS with your shop list, or FAIL "PRINTIFY_TOKEN is not set" until the token is in.
    - Order watcher (dry run): `ok: true` and the note "no Etsy-connected shop in Printify yet" until
      the shop opens and Printify is connected.
-8. **Turn on the watcher:** toggle **order-watcher** to Active. It stays quiet until there's an
+6. **Turn on the watcher:** toggle **order-watcher** to Active. It stays quiet until there's an
    order, apart from one email if Printify can't be reached.
+
+On another server with sudo the same steps work with the code anywhere (change the `cd ~/dinner-bell-co`
+in each Execute Command node) and the keys in `/etc/dinnerbellco/.env`.
 
 ## If n8n runs in Docker
 
-The official `n8nio/n8n` image has no Python, and the container can't see `/opt` or `/etc` on the
-host. Two ways round it; pick one when we know your setup:
+The official `n8nio/n8n` image has no Python, and the container can't see the host's files.
+Two ways round it:
 
 - **SSH node (recommended for Docker):** keep the Python on the host and swap each Execute Command
   node for n8n's SSH node ("Execute a command") pointed at the host (`172.17.0.1`, a dedicated
   low-privilege user, key login). No custom image, and the Execute Command node stays blocked.
 - **Custom image:** `FROM n8nio/n8n:<your version>`, `USER root`, `RUN apk add --no-cache python3`,
-  `USER node`; mount `-v /opt/dinner-bell-co:/opt/dinner-bell-co:ro -v /etc/dinnerbellco:/etc/dinnerbellco:ro
-  -v /var/lib/dinnerbellco:/var/lib/dinnerbellco`, and make the files readable by uid 1000 (the
-  container's `node` user). Then steps 4–8 above apply unchanged.
+  `USER node`; mount the repo at `/home/node/dinner-bell-co` and the keys at
+  `/home/node/.config/dinnerbellco`, readable by uid 1000 (the container's `node` user), and set
+  `DBC_STATE_DIR` to a writable mounted folder. Then steps 2–6 above apply unchanged.
 
 ## Updating
 
-`cd /opt/dinner-bell-co && git pull` (an n8n workflow can do this nightly). Re-import a workflow
+`cd ~/dinner-bell-co && git pull` in the xCloud terminal (an n8n workflow can do this nightly). Re-import a workflow
 from `n8n/` only when its file changes; the commands themselves update with the pull.

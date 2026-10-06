@@ -15,7 +15,7 @@ the alert channel. Setup details: [deploy/n8n.md](../deploy/n8n.md).
 ```
 dinner-bell-co/
 ├── README.md              how to run it, approval rules
-├── pyproject.toml         Python 3.11+, no runtime dependencies
+├── pyproject.toml         Python 3.10+, no runtime dependencies
 ├── .env.example           the name of every secret, never a value
 ├── config/
 │   ├── shop.toml          shop facts, both disclosures, promise, holiday order-by date

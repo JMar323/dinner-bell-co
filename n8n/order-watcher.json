@@ -23,7 +23,7 @@
     },
     {
       "parameters": {
-        "command": "cd /opt/dinner-bell-co && python3 -m dbc --json watch-orders"
+        "command": "cd ~/dinner-bell-co && python3 -m dbc --json watch-orders"
       },
       "id": "b1730394-1589-5211-8b75-e1d4d7c45969",
       "name": "Run watch-orders",

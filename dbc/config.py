@@ -3,19 +3,36 @@
 from __future__ import annotations
 
 import os
-import tomllib
 from pathlib import Path
+
+try:
+    import tomllib
+except ModuleNotFoundError:          # Python 3.10 (John's server); same code as 3.11's tomllib
+    from ._vendor import tomli as tomllib
 
 ROOT = Path(__file__).resolve().parent.parent
 CONFIG_DIR = ROOT / "config"
 BANNED_TERMS = ROOT / "data" / "banned_terms.txt"
-# Secrets live on the VPS, never in the repo (docs/keys.md). DBC_ENV_FILE overrides the path.
-ENV_FILE = Path("/etc/dinnerbellco/.env")
+# Secrets live on the VPS, never in the repo (docs/keys.md). The first file that exists wins;
+# DBC_ENV_FILE overrides both. The home-folder one is for servers without sudo (xCloud).
+ENV_FILES = (Path.home() / ".config" / "dinnerbellco" / ".env", Path("/etc/dinnerbellco/.env"))
+
+
+def env_file() -> Path:
+    if os.environ.get("DBC_ENV_FILE"):
+        return Path(os.environ["DBC_ENV_FILE"])
+    for p in ENV_FILES:
+        try:
+            if p.exists():
+                return p
+        except PermissionError:
+            continue
+    return ENV_FILES[0]
 
 
 def load_env(path: str | Path | None = None) -> None:
     """Read KEY=VALUE lines into os.environ. Variables already set win; a missing file is fine."""
-    path = Path(path or os.environ.get("DBC_ENV_FILE") or ENV_FILE)
+    path = Path(path) if path else env_file()
     try:
         text = path.read_text(encoding="utf-8")
     except (FileNotFoundError, PermissionError):

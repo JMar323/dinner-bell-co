@@ -45,7 +45,7 @@ python -m dbc watch-orders --dry-run  # see what it would email, without remembe
 Reads Printify orders and emails (through n8n) each new held order once, a reminder for any order
 still on hold after 18 hours, and any order that has issues, is unfulfillable, has a payment
 problem or was canceled. It never approves, sends to production, cancels or edits an order: the
-Printify client only sends GET requests. Keys come from `/etc/dinnerbellco/.env` (docs/keys.md);
+Printify client only sends GET requests. Keys come from `~/.config/dinnerbellco/.env` or `/etc/dinnerbellco/.env` (docs/keys.md);
 what was already emailed is kept in `$DBC_STATE_DIR/watch-orders.json`. Settings live in
 `config/shop.toml` under `[orders]`.
 
@@ -56,7 +56,7 @@ The master list is `/mnt/project-files/training/keywords/banned_terms.txt` in th
 
 ## Development
 
-Python 3.11+, no runtime dependencies.
+Python 3.10+, no runtime dependencies (Python 3.10 uses the TOML reader copied into `dbc/_vendor/`).
 
 ```
 pip install pytest

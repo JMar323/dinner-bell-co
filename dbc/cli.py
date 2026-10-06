@@ -7,7 +7,7 @@
     python -m dbc --json watch-orders                    # held orders, reminders, problems (read-only)
 
 Exit code 1 when any check fails (with --json the exit code is 0 and "ok" says it). Nothing here publishes or orders.
-Keys come from /etc/dinnerbellco/.env (DBC_ENV_FILE overrides); see docs/keys.md.
+Keys come from ~/.config/dinnerbellco/.env or /etc/dinnerbellco/.env (DBC_ENV_FILE overrides); see docs/keys.md.
 """
 
 from __future__ import annotations
@@ -125,7 +125,7 @@ def cmd_printify_check(args) -> int:
 def cmd_watch_orders(args) -> int:
     if not args.dry_run and not os.environ.get("ALERT_EMAIL_TO"):
         # A config crash (non-zero exit) so n8n's error workflow tells John, instead of silent alerts.
-        print("error: ALERT_EMAIL_TO is not set in /etc/dinnerbellco/.env (see .env.example)", file=sys.stderr)
+        print(f"error: ALERT_EMAIL_TO is not set in {config.env_file()} (see .env.example)", file=sys.stderr)
         return 2
     now = dt.datetime.fromisoformat(args.now) if args.now else dt.datetime.now(dt.timezone.utc)
     if now.tzinfo is None:
