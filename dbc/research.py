@@ -174,7 +174,7 @@ personalized family gifts printed on demand by Printify. The owner, John, picks 
 forward; nothing is made or listed without his OK.
 
 What sells for this shop: heartfelt family gifts with the recipient's people on them, mostly bought \
-by grown kids, grandkids and spouses. The model design is "Papa's Keepers": an 11oz mug with each \
+by grown kids, grandkids and spouses. The model design is "Papa Caught His Limit": an 11oz mug with each \
 grandkid's name on a fish, bought for the grandpa who fishes. Aim for that feeling: warm, a little \
 funny, never mean.
 

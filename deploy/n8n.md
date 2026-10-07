@@ -18,7 +18,7 @@ themselves, so no key ever sits in a workflow field or an n8n execution log.
 
 | File | What it does | Trigger |
 |---|---|---|
-| `setup-check.json` | Runs the drafter on the Papa's Keepers idea, `printify-check` and a dry run of the watcher, and shows PASS/FAIL for each | Manual ("Test workflow") |
+| `setup-check.json` | Runs the drafter on the fishing mug idea (Papa Caught His Limit), `printify-check` and a dry run of the watcher, and shows PASS/FAIL for each | Manual ("Test workflow") |
 | `order-watcher.json` | `dbc watch-orders`: new held orders, 18-hour reminders, has-issues / unfulfillable / payment / canceled. Emails only when there's something new | Every 30 min, 7:00am–9:30pm Eastern |
 | `error-alert.json` | Emails John when any routine crashes | n8n Error Trigger |
 | `nightly-update.json` | `dbc update`: fast-forwards `~/dinner-bell-co` to what was merged on GitHub, then runs the drafter once with the new code. Emails only when new code arrived (and names any workflow file to re-import) or when it couldn't update | Every night, 3:15am Eastern |
