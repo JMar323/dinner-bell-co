@@ -327,7 +327,7 @@ def lingo_ask(cfg: dict, themes: list[dict]) -> str:
         return rule
     return f"""{rule}
 
-Lingo research: for {", ".join(t['id'] for t in want)}, also find up to {lg.get('new_terms', 15)} words and sayings the person who gets the gift really uses (the nicknames, the brag words, the jokes they tell each other), from forums, glossaries, magazines and clubs. {lg.get('note', '')} Give each a meaning of a few plain words, put them in "lingo" with the pages you read, and leave out terms the theme already has. No brand or product names, no people's names, no trademarks, nothing crude, no double meanings, nothing political."""
+Lingo research: for {", ".join(t['id'] for t in want)}, also find up to {lg.get('new_terms', 15)} words and sayings the person who gets the gift says so often that the family buying it knows them too (the nicknames, the brag words, the jokes), from forums, glossaries, magazines and clubs. {lg.get('note', '')} Give each a meaning of a few plain words, put them in "lingo" with the pages you read, and leave out terms the theme already has. No brand or product names, no people's names, no trademarks, nothing crude, no double meanings, nothing political."""
 
 
 class Inputs:

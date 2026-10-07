@@ -252,7 +252,8 @@ def test_lingo_screen_drops_blocked_terms(inp):
 def test_repo_fishing_row_has_bass_lingo_and_it_is_clean(inp):
     fishing = next(t for t in inp.themes if t["id"] == "fishing")
     terms = research.parse_lingo(fishing["lingo"])
-    assert len(terms) >= 30 and {"hawg", "bucketmouth", "limit", "honey hole"} <= {t["term"] for t in terms}
+    assert len(terms) >= 15 and {"hawg", "bucketmouth", "limit", "honey hole"} <= {t["term"] for t in terms}
+    assert not {"crankbait", "jig", "lipping", "cull"} & {t["term"] for t in terms}   # family words, not gear talk
     assert research.screen_lingo(terms, inp.terms)[1] == []
 
 
@@ -272,7 +273,7 @@ def test_ingest_merges_new_lingo_into_a_cell(inp):
                    {"term": "Buck Fever", "meaning": "dupe"},
                    {"term": "hunting gang", "meaning": "crew"}]},
         {"line": "fishing", "sources": [], "terms": [{"term": "hawg", "meaning": "already there"},
-                                                     {"term": "fish story", "meaning": "a stretched truth"}]},
+                                                     {"term": "early bite", "meaning": "fish feed at sunup"}]},
         {"line": "space", "sources": [], "terms": [{"term": "x", "meaning": "y"}]},
     ]}
     out = research.ingest(data, inp, "claude-routine")
@@ -280,8 +281,8 @@ def test_ingest_merges_new_lingo_into_a_cell(inp):
     lingo = {lg["line"]: lg for lg in json.loads((inp.out_dir / "ideas.json").read_text())["lingo"]}
     assert lingo["hunting-deer-camp"]["cell"] == "buck fever (nerves when a big one shows up)"
     assert lingo["hunting-deer-camp"]["dropped"][0].startswith("hunting gang")
-    assert [t["term"] for t in lingo["fishing"]["new"]] == ["fish story"]
-    assert lingo["fishing"]["cell"].endswith("; fish story (a stretched truth)")
+    assert [t["term"] for t in lingo["fishing"]["new"]] == ["early bite"]
+    assert lingo["fishing"]["cell"].endswith("; early bite (fish feed at sunup)")
     assert "not an active theme" in lingo[""]["dropped"][0]
     report = (inp.out_dir / "report.md").read_text()
     assert "LINGO FOR THE THEMES SHEET" in report and "Cell: buck fever" in report

@@ -46,8 +46,8 @@ text = "Gifts families buy for Christmas 2026 (orders by December 8). They don't
 evergreen = ["birthday", "retirement", "Father's Day and Mother's Day later on"]
 
 [lingo]
-# Niche lingo research (John 2026-10-07): each week, themes with fewer than min_terms lingo terms get up to
+# Niche lingo research (John 2026-10-07: feeds the research and the art prompts, all themes): each week, themes with fewer than min_terms lingo terms get up to
 # new_terms more researched; the report has a ready-to-paste lingo cell per theme. Blocked terms are dropped.
 min_terms = 12
 new_terms = 15
-note = "Lean toward what a grandpa, grandma or parent says on a normal weekend over pro or tournament jargon."
+note = "Only words the buyer (spouse, kids, grandkids) has heard the recipient say: the everyday, high-level lingo, never gear or tournament jargon (no drop shot, Ned rig or sonar talk)."  # John 2026-10-07
