@@ -72,6 +72,18 @@ Themes come from `config/themes.csv` or John's Google Sheet with the same column
 demand, competition and gift fit with sources; banned and franchise terms are blocked. John picks,
 then listings are written. As a Claude routine (no key): [docs/research-routine.md](docs/research-routine.md).
 
+## Art log
+
+```
+python -m dbc art-log add limit-r02-B --prompt art/prompts/limit-r02-B.md   # one row per image John makes
+python -m dbc art-log set limit-r02-B score=4 decision=keep                 # his score and the decision
+python -m dbc art-log show
+```
+
+`art/log.csv` tracks prompt, model, image, checks and John's score for every art image; prompts are in
+`art/prompts/`, images stay in the private project folder. John's sheet shows the log with IMPORTDATA:
+[docs/art-log.md](docs/art-log.md).
+
 ## Banned terms
 
 The master list is `/mnt/project-files/training/keywords/banned_terms.txt` in the Claude project.
