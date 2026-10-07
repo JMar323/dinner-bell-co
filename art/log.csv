@@ -1,5 +1,6 @@
 id,date,design,round,variant,parent_id,model,prompt_file,references,image_file,width,height,transparent,edges_ok,check_notes,john_score,john_notes,decision
 style-r01-A,2026-10-07,style,1,A,,ChatGPT Images,art/prompts/style-r01-A.md,,designs/style-test/cycle-01/style-r01-A.png,1536,1024,yes,yes,,,"matches the prompt, clearly a largemouth bass; not artistic, it is what it is (reads as a realistic field-guide painting, not watercolor)",waiting
-style-r01-B,2026-10-07,style,1,B,,ChatGPT Images,art/prompts/style-r01-B.md,,,,,,,,,,waiting
+style-r01-B,2026-10-07,style,1,B,,ChatGPT Images,art/prompts/style-r01-B.md,,designs/style-test/cycle-01/style-r01-B.png,1254,1254,yes,yes,,,John: cartoon looks better than the realistic one for a mug; the fish looks happier,waiting
 style-r01-C,2026-10-07,style,1,C,,ChatGPT Images,art/prompts/style-r01-C.md,,,,,,,,,,waiting
 style-r01-D,2026-10-07,style,1,D,,ChatGPT Images,art/prompts/style-r01-D.md,designs/references/2026-10-07-papas-greatest-catch-other-seller.png (notes only),,,,,,,,,waiting
+style-r01-B2,2026-10-07,style,1,B2,style-r01-B,ChatGPT Images,art/prompts/style-r01-B.md,,designs/style-test/cycle-01/style-r01-B2.png,1254,1254,yes,yes,,,second ChatGPT take on prompt B (closed smiling mouth); same verdict as B,waiting
