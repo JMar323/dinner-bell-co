@@ -23,7 +23,9 @@ gift_fit = 0.3                # heartfelt family gift with names, like Papa's Ke
 
 [themes]
 # The themes to research, one row each: config/themes.csv in the repo, or a Google Sheet with the
-# same columns (active, theme, section, buyers, angles, products, notes). Only rows with active = yes count.
+# same columns (active, theme, section, buyers, angles, lingo, products, notes). Only rows with active = yes count.
+# lingo: the words the gift's recipient uses ("hawg (a big bass); honey hole; skunked"), split by ; with an
+# optional meaning in brackets. Context only: it steers the research and the art prompts, never printed as is.
 # Franchise names (Star Wars, Star Trek, Lord of the Rings...) are trademarks: a row can be in their
 # spirit ("space and sci-fi fans") but the ideas never use their names, characters or quotes.
 file = "config/themes.csv"
@@ -42,3 +44,10 @@ note = "Mugs first. Clothing or a hat only when the idea really suits it. hoodie
 # What to research for now (John 2026-10-06: Christmas first, not all Christmas-themed).
 text = "Gifts families buy for Christmas 2026 (orders by December 8). They don't all have to be Christmas-themed: any personalized gift someone would wrap for Christmas counts."
 evergreen = ["birthday", "retirement", "Father's Day and Mother's Day later on"]
+
+[lingo]
+# Niche lingo research (John 2026-10-07: feeds the research and the art prompts, all themes): each week, themes with fewer than min_terms lingo terms get up to
+# new_terms more researched; the report has a ready-to-paste lingo cell per theme. Blocked terms are dropped.
+min_terms = 12
+new_terms = 15
+note = "Only words the buyer (spouse, kids, grandkids) has heard the recipient say: the everyday, high-level lingo, never gear or tournament jargon (no drop shot, Ned rig or sonar talk)."  # John 2026-10-07

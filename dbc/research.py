@@ -54,8 +54,38 @@ def parse_themes(text: str) -> list[dict]:
             continue
         row["id"] = slug(row["theme"])
         row["products"] = [p.strip() for p in re.split(r"[;,]", row.get("products", "")) if p.strip()]
+        row["lingo"] = row.get("lingo", "")
         rows.append(row)
     return rows
+
+
+def parse_lingo(text: str) -> list[dict]:
+    """The lingo cell: "hawg (a big bass); keeper; honey hole (a secret spot)" -> [{term, meaning}]."""
+    out = []
+    for part in str(text or "").split(";"):
+        m = re.match(r"\s*([^()]+?)\s*(?:\((.*)\))?\s*$", part)
+        if m and m.group(1).strip():
+            out.append({"term": m.group(1).strip(), "meaning": (m.group(2) or "").strip()})
+    return out
+
+
+def lingo_cell(terms: list[dict]) -> str:
+    """The other way round: what goes back in the sheet's lingo cell."""
+    return "; ".join(t["term"] + (f" ({t['meaning']})" if t.get("meaning") else "") for t in terms)
+
+
+def screen_lingo(terms: list[dict], banned_terms: list[banned.Term]) -> tuple[list[dict], list[str]]:
+    """Drop lingo that hits a block entry for any product (it's context, but it could still end up in a
+    design or listing). Returns (kept, one line per dropped term)."""
+    kept, dropped = [], []
+    for t in terms:
+        hits = [h for kind in ("mug", "apparel") for h in banned.scan(banned_terms, kind, {"lingo": t["term"]})
+                if h.term.level == "block"]
+        if hits or checks.GANG.search(t["term"]):
+            dropped.append(f"{t['term']}: {hits[0].term.why if hits else 'house rule: never gang'}")
+        else:
+            kept.append(t)
+    return kept, dropped
 
 
 def sheet_csv_url(url: str) -> str:
@@ -77,7 +107,8 @@ def theme_changes(new: list[dict], old: list[dict]) -> list[str]:
     lines += [f"off: {t['theme']}" for i, t in before.items() if i not in after]
     for i, t in after.items():
         if i in before:
-            changed = [k for k in ("section", "buyers", "angles", "products", "notes") if t.get(k) != before[i].get(k)]
+            changed = [k for k in ("section", "buyers", "angles", "lingo", "products", "notes")
+                       if t.get(k) != before[i].get(k)]
             if changed:
                 lines.append(f"changed: {t['theme']} ({', '.join(changed)})")
     return lines
@@ -191,11 +222,24 @@ def answer_schema(cfg: dict, theme_ids: list[str]) -> dict:
             "listing": listing,
         },
     }
+    term = {"type": "object", "additionalProperties": False, "required": ["term", "meaning"],
+            "properties": {"term": {"type": "string"},
+                           "meaning": {"type": "string", "description": "A few plain words"}}}
+    lingo = {
+        "type": "object", "additionalProperties": False, "required": ["line", "terms", "sources"],
+        "properties": {
+            "line": {"type": "string", "enum": theme_ids},
+            "terms": {"type": "array", "items": term, "description": "New terms only, not ones the sheet already has"},
+            "sources": {"type": "array", "items": source, "description": "Pages you actually read"},
+        },
+    }
     return {
         "type": "object", "additionalProperties": False, "required": ["summary", "ideas"],
         "properties": {
             "summary": {"type": "string", "description": "3-5 sentences: what's trending this week and what you'd make first"},
             "ideas": {"type": "array", "items": idea},
+            "lingo": {"type": "array", "items": lingo,
+                      "description": "Only for the themes the brief asks lingo for"},
         },
     }
 
@@ -231,6 +275,7 @@ def build_brief(cfg: dict, products: dict, themes: list[dict], today: dt.date, f
         f"- {t['id']}: {t['theme']}. Bought by {t.get('buyers') or 'families'}."
         + (f" Angles: {t['angles']}." if t.get("angles") else "")
         + (f" Products: {', '.join(t['products'])}." if t["products"] else "")
+        + (f" Lingo: {t['lingo']}." if t.get("lingo") else "")
         for t in themes)
     allowed = "\n".join(
         f"- {p}: {products[p]['title_noun']} {products[p].get('size_label', '')}" if p in products else f"- {p}"
@@ -265,7 +310,24 @@ Ideas suggested in recent weeks (don't repeat them): {", ".join(recent) or "none
 
 Never use these words or phrases anywhere (trademark or house rules): {blocked}
 
+{lingo_ask(cfg, themes)}
+
 {listing_ask}"""
+
+
+def lingo_ask(cfg: dict, themes: list[dict]) -> str:
+    """Lingo is context: the words the person getting the gift uses for the hobby, trade or family. It
+    helps the research (and the art prompts) sound like the real thing; it's never pasted into a design
+    or listing as a list. Themes with fewer terms than [lingo] min_terms get more researched this week."""
+    lg = cfg.get("lingo", {})
+    want = [t for t in themes if len(parse_lingo(t.get("lingo", ""))) < lg.get("min_terms", 12)]
+    rule = ("Lingo is context only: use it to understand the people and the hobby, so the ideas sound like "
+            "they come from inside it. Never copy the lingo list into a design or a listing.")
+    if not want:
+        return rule
+    return f"""{rule}
+
+Lingo research: for {", ".join(t['id'] for t in want)}, also find up to {lg.get('new_terms', 15)} words and sayings the person who gets the gift says so often that the family buying it knows them too (the nicknames, the brag words, the jokes), from forums, glossaries, magazines and clubs. {lg.get('note', '')} Give each a meaning of a few plain words, put them in "lingo" with the pages you read, and leave out terms the theme already has. No brand or product names, no people's names, no trademarks, nothing crude, no double meanings, nothing political."""
 
 
 class Inputs:
@@ -437,6 +499,40 @@ def validate(data: dict, inp: Inputs) -> list[dict]:
     return out
 
 
+def validate_lingo(data: dict, inp: Inputs) -> list[dict]:
+    """New lingo per theme, screened, merged with what the sheet has, as a cell John pastes back in.
+    The sheet's own terms are screened too, so a blocked one shows up to be removed."""
+    found: dict[str, dict] = {}
+    for raw in data.get("lingo") or []:
+        if isinstance(raw, dict) and raw.get("line"):
+            got = found.setdefault(raw["line"], {"terms": [], "sources": []})
+            got["terms"] += [{"term": str(t.get("term", "")).strip(), "meaning": str(t.get("meaning", "")).strip()}
+                             for t in raw.get("terms") or [] if isinstance(t, dict) and str(t.get("term", "")).strip()]
+            got["sources"] += [s for s in raw.get("sources") or [] if isinstance(s, dict)]
+    out = []
+    for t in inp.themes:
+        have = parse_lingo(t.get("lingo", ""))
+        kept_have, dropped_have = screen_lingo(have, inp.terms)
+        seen = {banned.normalize(x["term"]) for x in have}
+        new = []
+        for x in found.get(t["id"], {}).get("terms", []):
+            if banned.normalize(x["term"]) and banned.normalize(x["term"]) not in seen:
+                seen.add(banned.normalize(x["term"]))
+                new.append(x)
+        kept_new, dropped_new = screen_lingo(new, inp.terms)
+        if not (kept_new or dropped_new or dropped_have):
+            continue
+        out.append({"line": t["id"], "theme": t["theme"], "new": kept_new,
+                    "dropped": dropped_new, "remove_from_sheet": dropped_have,
+                    "cell": lingo_cell(kept_have + kept_new),
+                    "sources": found.get(t["id"], {}).get("sources", [])})
+    unknown = sorted(set(found) - {t["id"] for t in inp.themes})
+    if unknown:
+        out.append({"line": "", "theme": "", "new": [], "dropped": [f"lingo for {u!r}: not an active theme" for u in unknown],
+                    "remove_from_sheet": [], "cell": "", "sources": []})
+    return out
+
+
 def to_idea_file(idea: dict, inp: Inputs) -> dict:
     """The drafter's idea format (ideas/papas-keepers-mug.toml), from the listing fields."""
     lst = idea["listing"]
@@ -515,7 +611,8 @@ def draft_one(idea: dict, inp: Inputs, out_dir: Path) -> dict | None:
     }
 
 
-def render_report(inp: Inputs, summary: str, ideas: list[dict], drafted: dict, cost_line: str) -> str:
+def render_report(inp: Inputs, summary: str, ideas: list[dict], drafted: dict, cost_line: str,
+                  lingo: list[dict] | None = None) -> str:
     L = [f"Dinner Bell Co idea research, week {inp.week} ({inp.today:%b %d, %Y})",
          f"Focus: {inp.cfg.get('focus', {}).get('text', '')}",
          f"Themes ({inp.themes_from}): {', '.join(t['theme'] for t in inp.themes)}", "", summary.strip(), ""]
@@ -543,6 +640,17 @@ def render_report(inp: Inputs, summary: str, ideas: list[dict], drafted: dict, c
             mark = "" if s.get("seen", True) else "  (not in the search results: check it)"
             L.append(f"   - {s.get('title', '')}: {s.get('url', '')}{mark}")
         L.append("")
+    if lingo:
+        L += ["LINGO FOR THE THEMES SHEET (context only, never printed: paste each cell into the lingo column)", ""]
+        for lg in lingo:
+            if lg["theme"]:
+                L.append(f"- {lg['theme']}: {len(lg['new'])} new")
+                if lg["cell"]:
+                    L.append(f"  Cell: {lg['cell']}")
+            L += [f"  ⛔ dropped {d}" for d in lg["dropped"]]
+            L += [f"  ⛔ remove from the sheet: {d}" for d in lg["remove_from_sheet"]]
+            L += [f"  - {s.get('title', '')}: {s.get('url', '')}" for s in lg["sources"][:4]]
+        L.append("")
     L += ["HOW TO PICK",
           "Tell Claude in the Etsy project which ideas to move forward (by number or name).",
           "Claude writes their listings and adds them to ideas/ in the repo. Nothing gets made,",
@@ -556,6 +664,7 @@ def ingest(data: dict, inp: Inputs, engine: str, raw: list | None = None, usage:
            cost: float | None = None) -> dict:
     """Check an answer and write this week's files. Returns the result (with the report as an email)."""
     ideas = validate(data, inp)
+    lingo = validate_lingo(data, inp)
     if raw:
         seen = seen_urls(raw)
         for idea in ideas:
@@ -580,13 +689,15 @@ def ingest(data: dict, inp: Inputs, engine: str, raw: list | None = None, usage:
         cost_line = (f"Cost of this run: about ${cost:.2f} ({usage.get('web_search_requests', 0)} searches, "
                      f"{usage.get('output_tokens', 0):,} tokens written).")
     (out_dir / "ideas.json").write_text(json.dumps(
-        {"week": inp.week, "engine": engine, "summary": summary, "ideas": ideas}, indent=2, ensure_ascii=False) + "\n",
+        {"week": inp.week, "engine": engine, "summary": summary, "ideas": ideas, "lingo": lingo},
+        indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8")
-    report = render_report(inp, summary, ideas, drafted, cost_line)
+    report = render_report(inp, summary, ideas, drafted, cost_line, lingo)
     (out_dir / "report.md").write_text(report, encoding="utf-8")
     blocked = sum(1 for i in ideas if i["blocked"] or i["problems"])
     return {"ok": True, "week": inp.week, "engine": engine, "ideas": len(ideas), "blocked": blocked,
-            "drafted": list(drafted), "dir": str(out_dir), "report": report,
+            "drafted": list(drafted), "lingo": [lg["line"] for lg in lingo if lg["new"]],
+            "dir": str(out_dir), "report": report,
             "subject": f"Dinner Bell Co: {len(ideas)} new ideas for week {inp.week}"}
 
 
