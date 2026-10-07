@@ -90,6 +90,9 @@ bass pro | block | all | retailer brand
 cabela's | block | all | retailer brand
 rapala | block | all | tackle brand
 yeti | block | all | drinkware brand
+googan squad | block | all | GOOGAN SQUAD, Fish Media LLC, SN 87431585 + 88253843 (class 25), 87431723 (class 28) (2026-10-07-niche-lingo)
+lunker city | block | all | LUNKER CITY, Reg. 3802960, lures (class 28) (2026-10-07-niche-lingo)
+going ike | block | all | named after a pro angler: no celebrities (2026-10-07-niche-lingo)
 happy camper | caution | apparel | pending apparel application (niches.md)
 
 # --- Hunting ----------------------------------------------------------------

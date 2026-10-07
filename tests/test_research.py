@@ -231,3 +231,64 @@ def test_themes_lists_what_the_sheet_changed(tmp_path, capsys):
     out = json.loads(capsys.readouterr().out)
     assert out["ok"] and out["from"] == str(sheet) and len(out["themes"]) == 5
     assert out["changes"] == ["new: Space and sci-fi fans", "off: Dogs", "changed: Fishing (section)"]
+
+
+# ---------------------------------------------------------------- niche lingo (John 2026-10-07)
+
+def test_lingo_cell_reads_and_writes_back():
+    terms = research.parse_lingo("hawg (a big bass); honey hole ;skunked (caught nothing, all day);; ")
+    assert terms == [{"term": "hawg", "meaning": "a big bass"}, {"term": "honey hole", "meaning": ""},
+                     {"term": "skunked", "meaning": "caught nothing, all day"}]
+    assert research.lingo_cell(terms) == "hawg (a big bass); honey hole; skunked (caught nothing, all day)"
+
+
+def test_lingo_screen_drops_blocked_terms(inp):
+    kept, dropped = research.screen_lingo(research.parse_lingo(
+        "lunker; Googan Squad (newbies); fishing gang; reel cool; keepers"), inp.terms)
+    assert [t["term"] for t in kept] == ["lunker", "keepers"]      # keepers is only a caution
+    assert len(dropped) == 3 and dropped[0].startswith("Googan Squad: GOOGAN SQUAD")
+
+
+def test_repo_fishing_row_has_bass_lingo_and_it_is_clean(inp):
+    fishing = next(t for t in inp.themes if t["id"] == "fishing")
+    terms = research.parse_lingo(fishing["lingo"])
+    assert len(terms) >= 30 and {"hawg", "bucketmouth", "limit", "honey hole"} <= {t["term"] for t in terms}
+    assert research.screen_lingo(terms, inp.terms)[1] == []
+
+
+def test_brief_uses_lingo_and_asks_for_it_where_thin(inp):
+    assert "Lingo: limit (" in inp.brief
+    assert "Never copy the lingo list into a design or a listing" in inp.brief
+    ask = inp.brief.split("Lingo research: for ")[1].split(" also find")[0]
+    assert "dogs" in ask and "fishing" not in ask              # fishing already has enough
+    assert inp.schema["properties"]["lingo"]["items"]["properties"]["line"]["enum"] == [t["id"] for t in inp.themes]
+    assert "lingo" not in inp.schema["required"]
+
+
+def test_ingest_merges_new_lingo_into_a_cell(inp):
+    data = {"summary": "s", "ideas": [idea()], "lingo": [
+        {"line": "hunting-deer-camp", "sources": [{"url": "https://example.com/deer", "title": "Deer talk"}],
+         "terms": [{"term": "buck fever", "meaning": "nerves when a big one shows up"},
+                   {"term": "Buck Fever", "meaning": "dupe"},
+                   {"term": "hunting gang", "meaning": "crew"}]},
+        {"line": "fishing", "sources": [], "terms": [{"term": "hawg", "meaning": "already there"},
+                                                     {"term": "fish story", "meaning": "a stretched truth"}]},
+        {"line": "space", "sources": [], "terms": [{"term": "x", "meaning": "y"}]},
+    ]}
+    out = research.ingest(data, inp, "claude-routine")
+    assert out["lingo"] == ["hunting-deer-camp", "fishing"]
+    lingo = {lg["line"]: lg for lg in json.loads((inp.out_dir / "ideas.json").read_text())["lingo"]}
+    assert lingo["hunting-deer-camp"]["cell"] == "buck fever (nerves when a big one shows up)"
+    assert lingo["hunting-deer-camp"]["dropped"][0].startswith("hunting gang")
+    assert [t["term"] for t in lingo["fishing"]["new"]] == ["fish story"]
+    assert lingo["fishing"]["cell"].endswith("; fish story (a stretched truth)")
+    assert "not an active theme" in lingo[""]["dropped"][0]
+    report = (inp.out_dir / "report.md").read_text()
+    assert "LINGO FOR THE THEMES SHEET" in report and "Cell: buck fever" in report
+
+
+def test_theme_changes_notice_lingo():
+    old = research.parse_themes("theme,lingo\nFishing,hawg\n")
+    new = research.parse_themes("theme,lingo\nFishing,hawg; dink\n")
+    assert research.theme_changes(new, old) == ["changed: Fishing (lingo)"]
+    assert research.theme_changes(research.parse_themes("theme\nFishing\n"), research.parse_themes("theme,lingo\nFishing,\n")) == []

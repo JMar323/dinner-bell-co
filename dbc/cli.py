@@ -10,6 +10,7 @@
     python -m dbc research-check                         # is the Anthropic key working? (free)
     python -m dbc themes                                 # which themes the research reads, and the sheet's CSV link
     python -m dbc themes --themes sheet.csv              # check a downloaded copy of the sheet, list what changed
+    python -m dbc themes --lingo                         # also print each theme's lingo (context for art prompts)
     python -m dbc research-brief                         # this week's research instructions (any engine)
     python -m dbc art-log add limit-r02-B --prompt art/prompts/limit-r02-B.md   # log an art image (docs/art-log.md)
     python -m dbc art-log set limit-r02-B score=4 decision=keep                 # John's score and the decision
@@ -247,18 +248,28 @@ def cmd_themes(args) -> int:
     try:
         themes, where = research.load_themes(config.ROOT, cfg, args.themes)
         repo, _ = research.load_themes(config.ROOT, {"themes": {"file": cfg.get("themes", {}).get("file", "config/themes.csv")}})
+        terms = banned.load(config.ROOT / "data" / "banned_terms.txt")
     except (OSError, UnicodeDecodeError, research.ResearchError) as e:
         print(json.dumps({"ok": False, "error": str(e)}) if args.json else f"error: {e}")
         return 0 if args.json else 1
     result = {"ok": True, "from": where, "sheet_url": url, "csv_url": research.sheet_csv_url(url) if url else "",
-              "themes": [{"theme": t["theme"], "products": t["products"]} for t in themes],
+              "themes": [{"theme": t["theme"], "products": t["products"],
+                          "lingo": len(research.parse_lingo(t.get("lingo", ""))),
+                          "lingo_blocked": research.screen_lingo(research.parse_lingo(t.get("lingo", "")), terms)[1]}
+                         for t in themes],
               "changes": research.theme_changes(themes, repo) if args.themes else []}
     if args.json:
         print(json.dumps(result, ensure_ascii=False))
         return 0
     print(f"{len(themes)} active themes from {where}:")
     for t in themes:
-        print(f"  {t['theme']} ({', '.join(t['products']) or 'any product'})")
+        print(f"  {t['theme']} ({', '.join(t['products']) or 'any product'}; {len(research.parse_lingo(t.get('lingo', '')))} lingo terms)")
+        if args.lingo:
+            for x in research.parse_lingo(t.get("lingo", "")):
+                print(f"      {x['term']}" + (f": {x['meaning']}" if x["meaning"] else ""))
+    for t in result["themes"]:
+        for d in t["lingo_blocked"]:
+            print(f"  ⛔ remove from {t['theme']} lingo: {d}")
     if url:
         print(f"Google Sheet CSV link: {result['csv_url']}")
     for line in result["changes"]:
@@ -330,6 +341,7 @@ def main(argv: list[str] | None = None) -> int:
     r.set_defaults(func=cmd_research)
     th = sub.add_parser("themes", help="which themes the research reads (checks a downloaded copy of the sheet)")
     th.add_argument("--themes", type=Path, help="a downloaded copy of the themes sheet to check")
+    th.add_argument("--lingo", action="store_true", help="also print each theme's lingo (context for prompts)")
     th.set_defaults(func=cmd_themes)
     rb = sub.add_parser("research-brief", help="this week's research instructions and answer format")
     rb.add_argument("--inbox", type=Path, default=inbox)

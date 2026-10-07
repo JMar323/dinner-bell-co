@@ -33,6 +33,24 @@ banned and franchise terms, writes report.md + ideas.json).
 6. Reply in the thread with the week's summary and the numbered list (name, score, product, one
    line why), attach `report.md` and `ideas.json`, and ask John which numbers to move forward.
    Blocked ideas stay listed with the reason.
+7. **Lingo.** If the report has a "LINGO FOR THE THEMES SHEET" section, add one short line to the
+   reply per theme with new terms, and say the cells are in `report.md` for John to paste into the
+   sheet's `lingo` column. When John OKs them, copy the same cells into `config/themes.csv` in a PR so
+   the backup matches.
+
+## Niche lingo
+
+The themes sheet's `lingo` column holds the words the gift's recipient really uses: for Fishing,
+"hawg (a big bass); honey hole (a secret spot); skunked (caught nothing all day)". Terms are split by
+`;` with an optional meaning in brackets. It's context only: the brief gives it to the research so
+the ideas sound like they come from inside the hobby, and the art prompts can borrow it to describe
+a scene ("a hefty bucketmouth bass bursting up through lily pads"). It's never pasted into a design
+or a listing as a list, and every term is screened against `data/banned_terms.txt` (blocked ones are
+dropped, and ones already in the sheet are flagged to remove).
+
+Each week, themes with fewer than `[lingo] min_terms` terms (`config/research.toml`) get up to
+`new_terms` more researched with sources, so a new row fills itself in. `python3 -m dbc themes --lingo`
+prints every theme's lingo for writing prompts.
 
 ## When John picks
 
