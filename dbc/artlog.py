@@ -2,10 +2,11 @@
 
     python -m dbc art-log add limit-r02-B --prompt art/prompts/limit-r02-B.md
     python -m dbc art-log add limit-r02-B --image designs/limit/round-02/limit-r02-B.png --check B_check.json
-    python -m dbc art-log set limit-r02-B score=4 notes="love the colors" decision=keep
+    python -m dbc art-log set limit-r02-B decision=keep notes="love the colors"
     python -m dbc art-log show
 
 IDs are <design>-r<round>-<variant>, e.g. limit-r02-B; a redo of B in the same round is limit-r02-B2.
+Claude names every image; John never types an ID or a score, he just says keep, redo or drop.
 The log is art/log.csv; John's Google Sheet shows it with IMPORTDATA. Images stay in the private
 project folder, never in this public repo.
 """
@@ -22,15 +23,12 @@ from pathlib import Path
 from .config import ROOT
 
 LOG = ROOT / "art" / "log.csv"
-COLUMNS = ["id", "date", "design", "round", "variant", "parent_id", "model", "prompt_file", "references",
-           "image_file", "width", "height", "transparent", "edges_ok", "check_notes", "john_score",
-           "john_notes", "decision"]
-DECISIONS = ("waiting", "keep", "revise", "drop", "approved")
+COLUMNS = ["id", "date", "design", "parent_id", "prompt_file", "image_file", "check", "notes", "decision"]
+DECISIONS = ("", "keep", "redo", "drop")  # blank: not decided yet
 ID = re.compile(r"^(?P<design>[a-z0-9]+(?:-[a-z0-9]+)*)-r(?P<round>\d{2})-(?P<variant>[A-Z])(?P<redo>\d*)$")
-# short names John and Claude type; the left side is what `set` accepts
-FIELDS = {"score": "john_score", "notes": "john_notes", "decision": "decision", "model": "model",
-          "prompt": "prompt_file", "refs": "references", "image": "image_file", "parent": "parent_id",
-          "check_notes": "check_notes"}
+# short names for `set`; the right side is the column
+FIELDS = {"notes": "notes", "decision": "decision", "prompt": "prompt_file", "image": "image_file",
+          "parent": "parent_id", "check": "check"}
 
 
 class ArtLogError(ValueError):
@@ -49,7 +47,7 @@ def parse_id(art_id: str) -> dict:
             raise ArtLogError(f"{art_id}: a redo number starts at 2 ({art_id[:-len(redo)]}2)")
         base = art_id[:-len(redo)]
         parent = base if n == 2 else f"{base}{n - 1}"
-    return {"design": m["design"], "round": str(int(m["round"])), "variant": m["variant"] + redo, "parent_id": parent}
+    return {"design": m["design"], "parent_id": parent}
 
 
 def read(path: Path = LOG) -> list[dict]:
@@ -72,39 +70,36 @@ def write(rows: list[dict], path: Path = LOG) -> None:
     path.write_text(buf.getvalue(), encoding="utf-8")
 
 
-def from_check(check: dict) -> dict:
-    """Columns filled from the image checker's <id>_check.json (designs/tools/study.py)."""
+def from_check(check: dict) -> str:
+    """One `check` cell from the image checker's <id>_check.json (designs/tools/study.py):
+    "ok" or "problem", the pixel size, then anything the checker flagged."""
     transparent = bool(check.get("has_alpha_channel") and check.get("corners_transparent"))
-    edges_ok = (transparent and not check.get("touches_edge") and check.get("stray_specks", 0) <= 3
-                and check.get("pct_light_fringe", 0) <= 25)
-    notes = [n for n in check.get("verdict", []) if not n.startswith("clean")]
-    return {"width": str(check.get("width", "")), "height": str(check.get("height", "")),
-            "transparent": "yes" if transparent else "no", "edges_ok": "yes" if edges_ok else "no",
-            "check_notes": "; ".join(notes)}
+    ok = (transparent and not check.get("touches_edge") and check.get("stray_specks", 0) <= 3
+          and check.get("pct_light_fringe", 0) <= 25)
+    parts = [f"{'ok' if ok else 'problem'}, {check.get('width', '?')}x{check.get('height', '?')}"]
+    parts += [n for n in check.get("verdict", []) if not n.startswith("clean")]
+    return "; ".join(parts)
 
 
 def _validate(row: dict) -> None:
     if row["decision"] not in DECISIONS:
-        raise ArtLogError(f"decision must be one of {', '.join(DECISIONS)}, not {row['decision']!r}")
-    if row["john_score"] and row["john_score"] not in ("1", "2", "3", "4", "5"):
-        raise ArtLogError(f"score must be 1 to 5, not {row['john_score']!r}")
+        raise ArtLogError(f"decision must be keep, redo, drop or blank, not {row['decision']!r}")
 
 
-def add(art_id: str, *, model: str = "ChatGPT Images", prompt: str = "", refs: str = "", image: str = "",
-        check: dict | None = None, parent: str = "", today: dt.date | None = None, path: Path = LOG) -> dict:
+def add(art_id: str, *, prompt: str = "", image: str = "", check: dict | None = None, parent: str = "",
+        today: dt.date | None = None, path: Path = LOG) -> dict:
     """New row, or fills in an existing one (e.g. the image arrives after the prompt was logged)."""
     rows = read(path)
     row = next((r for r in rows if r["id"] == art_id), None)
     if row is None:
-        row = {c: "" for c in COLUMNS} | {"id": art_id, "decision": "waiting"} | parse_id(art_id)
+        row = {c: "" for c in COLUMNS} | {"id": art_id} | parse_id(art_id)
         rows.append(row)
     row["date"] = row["date"] or (today or dt.date.today()).isoformat()
-    for col, val in (("model", model), ("prompt_file", prompt), ("references", refs), ("image_file", image),
-                     ("parent_id", parent)):
+    for col, val in (("prompt_file", prompt), ("image_file", image), ("parent_id", parent)):
         if val:
             row[col] = val
     if check:
-        row.update(from_check(check))
+        row["check"] = from_check(check)
     if row["prompt_file"] and not (ROOT / row["prompt_file"]).exists():
         raise ArtLogError(f"{row['prompt_file']} doesn't exist in the repo: save the prompt there first")
     _validate(row)

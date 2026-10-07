@@ -13,7 +13,7 @@
     python -m dbc themes --lingo                         # also print each theme's lingo (context for art prompts)
     python -m dbc research-brief                         # this week's research instructions (any engine)
     python -m dbc art-log add limit-r02-B --prompt art/prompts/limit-r02-B.md   # log an art image (docs/art-log.md)
-    python -m dbc art-log set limit-r02-B score=4 decision=keep                 # John's score and the decision
+    python -m dbc art-log set limit-r02-B decision=keep                         # keep, redo or drop
     python -m dbc research-ingest answer.json            # check an answer, write ideas/inbox/<week>/report.md
 
 Exit code 1 when any check fails (with --json the exit code is 0 and "ok" says it). Nothing here publishes or orders.
@@ -280,8 +280,8 @@ def cmd_themes(args) -> int:
 def cmd_art_log(args) -> int:
     try:
         if args.action == "add":
-            row = artlog.add(args.id, model=args.model, prompt=args.prompt or "", refs=args.refs or "",
-                             image=args.image or "", check=artlog.load_check(args.check), parent=args.parent or "")
+            row = artlog.add(args.id, prompt=args.prompt or "", image=args.image or "",
+                             check=artlog.load_check(args.check), parent=args.parent or "")
             rows = [row]
         elif args.action == "set":
             rows = [artlog.set_fields(args.id, args.pairs)]
@@ -294,9 +294,8 @@ def cmd_art_log(args) -> int:
         print(json.dumps(rows, ensure_ascii=False))
         return 0
     for r in rows:
-        score = f"score {r['john_score']}" if r["john_score"] else "no score"
-        check = f"transparent {r['transparent']}, edges ok {r['edges_ok']}" if r["transparent"] else "not checked"
-        print(f"{r['id']}  {r['decision']}  {score}  {check}  {r['john_notes']}".rstrip())
+        check = r["check"].split(";")[0] or "not checked"
+        print(f"{r['id']}  {r['decision'] or 'undecided'}  {check}  {r['notes']}".rstrip())
     return 0
 
 
@@ -353,17 +352,15 @@ def main(argv: list[str] | None = None) -> int:
     ri.add_argument("--themes", type=Path, help="themes CSV to use instead of config/themes.csv or the sheet")
     ri.add_argument("--engine", default="claude-routine")
     ri.set_defaults(func=cmd_research_ingest)
-    al = sub.add_parser("art-log", help="log of art images: prompt, model, image, checks, John's score (art/log.csv)")
+    al = sub.add_parser("art-log", help="log of art images: prompt, image, check, decision (art/log.csv)")
     al_sub = al.add_subparsers(dest="action", required=True)
     aa = al_sub.add_parser("add", help="add an image (or fill in one already logged)")
     aa.add_argument("id", help="design-r<round>-<variant>, e.g. limit-r02-B; a redo is limit-r02-B2")
-    aa.add_argument("--model", default="ChatGPT Images")
     aa.add_argument("--prompt", help="the prompt file in the repo, e.g. art/prompts/limit-r02-B.md")
-    aa.add_argument("--refs", help="reference images used, e.g. limit-r01-A or a sheet row")
     aa.add_argument("--image", help="the image in the project folder, e.g. designs/limit/round-02/limit-r02-B.png")
     aa.add_argument("--check", type=Path, help="the image checker's <id>_check.json")
     aa.add_argument("--parent", help="the image this one builds on (a redo's parent is filled in for you)")
-    asg = al_sub.add_parser("set", help="set fields: score=1..5 notes=... decision=waiting|keep|revise|drop|approved")
+    asg = al_sub.add_parser("set", help="set fields: decision=keep|redo|drop notes=... check=...")
     asg.add_argument("id")
     asg.add_argument("pairs", nargs="+", metavar="name=value")
     al_sub.add_parser("show", help="list the log")

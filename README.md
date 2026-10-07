@@ -76,11 +76,11 @@ then listings are written. As a Claude routine (no key): [docs/research-routine.
 
 ```
 python -m dbc art-log add limit-r02-B --prompt art/prompts/limit-r02-B.md   # one row per image John makes
-python -m dbc art-log set limit-r02-B score=4 decision=keep                 # his score and the decision
+python -m dbc art-log set limit-r02-B decision=keep                         # keep, redo or drop
 python -m dbc art-log show
 ```
 
-`art/log.csv` tracks prompt, model, image, checks and John's score for every art image; prompts are in
+`art/log.csv` tracks prompt, image, check and keep/redo/drop for every art image; prompts are in
 `art/prompts/`, images stay in the private project folder. John's sheet shows the log with IMPORTDATA:
 [docs/art-log.md](docs/art-log.md).
 
