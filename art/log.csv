@@ -1,4 +1,4 @@
 id,date,design,round,variant,parent_id,model,prompt_file,references,image_file,width,height,transparent,edges_ok,check_notes,john_score,john_notes,decision
-style-r01-A,2026-10-07,style,1,A,,ChatGPT Images,art/prompts/style-r01-A.md,,,,,,,,,,waiting
+style-r01-A,2026-10-07,style,1,A,,ChatGPT Images,art/prompts/style-r01-A.md,,designs/style-test/cycle-01/style-r01-A.png,1536,1024,yes,yes,,,"matches the prompt, clearly a largemouth bass; not artistic, it is what it is (reads as a realistic field-guide painting, not watercolor)",waiting
 style-r01-B,2026-10-07,style,1,B,,ChatGPT Images,art/prompts/style-r01-B.md,,,,,,,,,,waiting
 style-r01-C,2026-10-07,style,1,C,,ChatGPT Images,art/prompts/style-r01-C.md,,,,,,,,,,waiting
