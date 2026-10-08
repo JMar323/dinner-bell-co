@@ -4,6 +4,13 @@ style-r01-B,2026-10-07,style,,art/prompts/style-r01-B.md,designs/style-test/cycl
 style-r01-C,2026-10-07,style,,art/prompts/style-r01-C.md,,,"John: came out looking the same as A, so no image saved",drop
 style-r01-D,2026-10-07,style,,art/prompts/style-r01-D.md,designs/style-test/cycle-01/style-r01-D.png,"ok, 1254x1254","cute and playful look (prompt D); chubby, rosy cheeks, smiling. John picked a mix: D shape + B lines",keep
 style-r01-B2,2026-10-07,style,style-r01-B,art/prompts/style-r01-B.md,designs/style-test/cycle-01/style-r01-B2.png,"ok, 1254x1254",second ChatGPT take on prompt B (closed smiling mouth); same verdict as B,keep
-limit-r02-A,2026-10-07,limit,style-r01-D,art/prompts/limit-r02-A.md,designs/limit/round-02/limit-r02-A.png,"ok, 1536x1024; 5 in wide at 300 dpi","good fish, but body long and eye small; redo A2 to match the kid fish",
-limit-r02-B,2026-10-07,limit,limit-r02-A,art/prompts/limit-r02-B.md,designs/limit/round-02/limit-r02-B.png,"ok, 1774x887; cut into 6 fish, about 1 in each on the mug",cuter than A; the six look like one family,
+limit-r02-A,2026-10-07,limit,style-r01-D,art/prompts/limit-r02-A.md,designs/limit/round-02/limit-r02-A.png,"ok, 1536x1024; 5 in wide at 300 dpi","good fish, but body long and eye small; redo A2 to match the kid fish",redo
+limit-r02-B,2026-10-07,limit,limit-r02-A,art/prompts/limit-r02-B.md,designs/limit/round-02/limit-r02-B.png,"ok, 1774x887; cut into 6 fish, about 1 in each on the mug","cuter than A; the six look like one family. John: good, cut into designs/limit/round-02/slices/",keep
 limit-r02-C,2026-10-07,limit,limit-r02-A,art/prompts/limit-r02-C.md,designs/limit/round-02/limit-r02-C.png,"ok, 1254x1254",alone it looks a bit like a cartoon bomb; optional redo C2,
+limit-r02-A2,2026-10-08,limit,limit-r02-A,art/prompts/limit-r02-A2.md,,,,
+limit-r02-C2,2026-10-08,limit,limit-r02-C,art/prompts/limit-r02-C2.md,,,,
+recipe-r01-A,2026-10-08,recipe,limit-r02-B,art/prompts/recipe-r01-A.md,,,,
+recipe-r01-B,2026-10-08,recipe,recipe-r01-A,art/prompts/recipe-r01-B.md,,,,
+trophy-r01-A,2026-10-08,trophy,limit-r02-B,art/prompts/trophy-r01-A.md,,,,
+trophy-r01-B,2026-10-08,trophy,trophy-r01-A,art/prompts/trophy-r01-B.md,,,,
+trophy-r01-C,2026-10-08,trophy,trophy-r01-A,art/prompts/trophy-r01-C.md,,,,
