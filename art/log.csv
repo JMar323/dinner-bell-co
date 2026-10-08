@@ -7,11 +7,11 @@ style-r01-B2,2026-10-07,style,style-r01-B,art/prompts/style-r01-B.md,designs/sty
 limit-r02-A,2026-10-07,limit,style-r01-D,art/prompts/limit-r02-A.md,designs/limit/round-02/limit-r02-A.png,"ok, 1536x1024; 5 in wide at 300 dpi","good fish, but body long and eye small; redo A2 to match the kid fish",redo
 limit-r02-B,2026-10-07,limit,limit-r02-A,art/prompts/limit-r02-B.md,designs/limit/round-02/limit-r02-B.png,"ok, 1774x887; cut into 6 fish, about 1 in each on the mug","cuter than A; the six look like one family. John: good, cut into designs/limit/round-02/slices/",keep
 limit-r02-C,2026-10-07,limit,limit-r02-A,art/prompts/limit-r02-C.md,designs/limit/round-02/limit-r02-C.png,"ok, 1254x1254",alone it looks a bit like a cartoon bomb; optional redo C2,drop
-limit-r02-A2,2026-10-08,limit,limit-r02-A,art/prompts/limit-r02-A2.md,designs/limit/round-02/limit-r02-A2.png,"ok, 1536x1024","short, round body, big eye, closed smile; matches the kid fish as one family. Fish is ~99% opaque (alpha 250-254), set to solid in the print file. Set proof: limit-r02-A2BC_proof_mug.png",
+limit-r02-A2,2026-10-08,limit,limit-r02-A,art/prompts/limit-r02-A2.md,designs/limit/round-02/limit-r02-A2.png,"ok, 1536x1024","short, round body, big eye, closed smile; matches the kid fish as one family. Fish is ~99% opaque (alpha 250-254), set to solid in the print file. Set proof: limit-r02-A2BC_proof_mug.png",keep
 limit-r02-C2,2026-10-08,limit,limit-r02-C,art/prompts/limit-r02-C2.md,,,"John: likes the bobber idea, but the ripple lines look like a wifi signal (screenshot only, no image saved)",drop
 recipe-r01-A,2026-10-08,recipe,limit-r02-B,art/prompts/recipe-r01-A.md,,,,
 recipe-r01-B,2026-10-08,recipe,recipe-r01-A,art/prompts/recipe-r01-B.md,,,,
 trophy-r01-A,2026-10-08,trophy,limit-r02-B,art/prompts/trophy-r01-A.md,,,,
 trophy-r01-B,2026-10-08,trophy,trophy-r01-A,art/prompts/trophy-r01-B.md,,,,
 trophy-r01-C,2026-10-08,trophy,trophy-r01-A,art/prompts/trophy-r01-C.md,,,,
-limit-r02-C3,2026-10-08,limit,limit-r02-C2,art/prompts/limit-r02-C3.md,designs/limit/round-02/limit-r02-C3.png,"ok, 1024x1536; subject under 900 px wide: fine for 4 small fish, upscale for a hero image","clean; reads as a bobber on a line with a hook, not a bomb or wifi. 1.7 in max at 300 dpi, plenty for an accent. Set proof: limit-r02-A2BC3_proof_mug.png",
+limit-r02-C3,2026-10-08,limit,limit-r02-C2,art/prompts/limit-r02-C3.md,designs/limit/round-02/limit-r02-C3.png,"ok, 1024x1536; subject under 900 px wide: fine for 4 small fish, upscale for a hero image","clean; reads as a bobber on a line with a hook, not a bomb or wifi. 1.7 in max at 300 dpi, plenty for an accent. Set proof: limit-r02-A2BC3_proof_mug.png",keep
